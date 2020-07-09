@@ -1,0 +1,32 @@
+funciones:
+crear
+buscar
+intersectar
+unir
+complemento
+eliminar_todo
+
+estructura:
+la que guarda los datos (arbol o tabla hash?)
+	*arbol: tendría que ser balanceado?
+			
+	*tabla hash: doble sondeo?
+				 rebalse?
+				 indice de carga?
+
+la de los conjuntos por comp?
+la de los conjuntos por ext?
+una estructura con el array de atos y el tipo de conjunto?
+
+representar los conjuntos como?:
+intervalo {
+void* parte_extension
+void* parte_comprensio
+}
+y luego las partes son tablas hash o arboles AVL o listas enlazadas o arrays
+
+Paginas utiles:
+http://manpages.ubuntu.com/manpages/xenial/man3/CUnit.3.html
+https://github.com/koolkt/test_travis_cunit
+https://mysnippets443.wordpress.com/2015/03/07/ubuntu-install-cunit/
+http://cunit.sourceforge.net/doc/writing_tests.html

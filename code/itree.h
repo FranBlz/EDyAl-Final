@@ -10,6 +10,7 @@ typedef Intervalo *Interval;
 
 typedef struct _INode {
   Interval intervalo;
+  int alt;
   double maySub;
   struct _INode *left;
   struct _INode *right;

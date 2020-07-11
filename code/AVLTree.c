@@ -22,9 +22,11 @@ int avltree_altura_aux(AVLTree arbol) {
   int sizeDer = avltree_altura_aux(arbol->right);
   return sizeIzq > sizeDer ? sizeIzq + 1 : sizeDer + 1;
 }
+
 // Cambiar altura para que respete las correcciones de valentina
 // 1 - la altura empieza en 1?
 // 2 - agregar un valor de altura a los nodos para no recalcular el arbol entero
+// 3 - cada nodo lleva el valor de su altura
 int avltree_altura(AVLTree arbol) {
   return arbol == NULL ? -1 : avltree_altura_aux(arbol) - 1;
 }
@@ -47,6 +49,7 @@ AVLTree avltree_rotacion_simple_izq(AVLTree arbol) {
   return aux;
 }
 
+// el balance deberia ser menor? (teorico)
 AVLTree avltree_balancear_izq(AVLTree arbol) {
   if (avltree_balance_factor(arbol->left) <= 0)
     arbol = avltree_rotacion_simple_der(arbol);
@@ -57,6 +60,7 @@ AVLTree avltree_balancear_izq(AVLTree arbol) {
   return arbol;
 }
 
+// el balance deberia ser menor? (teorico)
 AVLTree avltree_balancear_der(AVLTree arbol) {
   if (avltree_balance_factor(arbol->right) >= 0)
     arbol = avltree_rotacion_simple_izq(arbol);

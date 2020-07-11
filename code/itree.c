@@ -15,22 +15,19 @@ void itree_destruir(ITree arbol) {
   }
 }
 
-int itree_altura_aux(ITree arbol) {
-  if (arbol == NULL)
-    return 0;
-  int sizeIzq = itree_altura_aux(arbol->left);
-  int sizeDer = itree_altura_aux(arbol->right);
-  return sizeIzq > sizeDer ? sizeIzq + 1 : sizeDer + 1;
-}
 // Cambiar altura para que respete las correcciones de valentina
 // 1 - la altura empieza en 1?
 // 2 - agregar un valor de altura a los nodos para no recalcular el arbol entero
 int itree_altura(ITree arbol) {
-  return arbol == NULL ? -1 : itree_altura_aux(arbol) - 1;
+  if (arbol == NULL)
+    return -1;
+  int sizeIzq = arbol->left == NULL ? -1 : arbol->left->alt;
+  int sizeDer = arbol->right == NULL ? -1 : arbol->right->alt;
+  return sizeIzq > sizeDer ? sizeIzq + 1 : sizeDer + 1;
 }
 
 int itree_balance_factor(ITree arbol) {
-  return itree_altura(arbol->right) - itree_altura(arbol->left);
+  return arbol->right->alt - arbol->left->alt;
 }
 
 double itree_max_aux(double maySub, ITree nodo2) {
@@ -65,22 +62,32 @@ ITree itree_rotacion_simple_izq(ITree arbol) {
   return aux;
 }
 
+// el balance deberia ser menor? (teorico)
 ITree itree_balancear_izq(ITree arbol) {
-  if (itree_balance_factor(arbol->left) <= 0)
+  if (itree_balance_factor(arbol->left) <= 0) {
     arbol = itree_rotacion_simple_der(arbol);
-  else {
+    arbol->left->alt = itree_altura(arbol->left);
+  }else {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
+    arbol->left->alt = itree_altura(arbol->left);
+    arbol->alt = itree_altura(arbol);
     arbol = itree_rotacion_simple_der(arbol);
+    arbol->right->alt = itree_altura(arbol->right);
   }
   return arbol;
 }
 
+// el balance deberia ser menor? (teorico)
 ITree itree_balancear_der(ITree arbol) {
-  if (itree_balance_factor(arbol->right) >= 0)
+  if (itree_balance_factor(arbol->right) >= 0) {
     arbol = itree_rotacion_simple_izq(arbol);
-  else {
+    arbol->right->alt = itree_altura(arbol->right);
+  }else {
     arbol->right = itree_rotacion_simple_der(arbol->right);
+    arbol->right->alt = itree_altura(arbol->right);
+    arbol->alt = itree_altura(arbol);
     arbol = itree_rotacion_simple_izq(arbol);
+    arbol->left = itree_altura(arbol->left);
   }
   return arbol;
 }
@@ -90,6 +97,7 @@ ITree create_node(Interval intervalo) {
   nodo->intervalo = malloc(sizeof(Intervalo));
   nodo->intervalo->bgn = intervalo->bgn;
   nodo->intervalo->end = intervalo->end;
+  nodo->alt = -1;
   nodo->maySub = intervalo->end;
   nodo->left = NULL;
   nodo->right = NULL;
@@ -101,6 +109,7 @@ double get_direccion_arbol(Interval nodo, Interval intervalo) {
   return inicio == 0 ? intervalo->end - nodo->end : inicio;
 }
 
+// plantear correccion de valentina, usar bandera para no rebalancear hacia arriba constantemente
 ITree itree_insertar(ITree arbol, Interval intervalo) {
   if (arbol == NULL)
     return create_node(intervalo);
@@ -118,6 +127,7 @@ ITree itree_insertar(ITree arbol, Interval intervalo) {
       arbol = itree_balancear_der(arbol);
   }
 
+  arbol->alt = itree_altura(arbol);
   return arbol;
 }
 

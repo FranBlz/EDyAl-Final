@@ -6,7 +6,7 @@
 unsigned hash(char* clave) {  
   int p = 0;
   for(int i = 0; clave[i] != '\0'; i++)
-    p += clave[i];
+    p = p*31 + clave[i]; //si no anda el hash es por esto (quizas)
   return p;
 }
 

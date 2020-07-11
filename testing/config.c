@@ -77,7 +77,9 @@ int itree_suite(){
         test_altura_balanceo_simple_izq,
         test_altura_balanceo_simple_der,
         test_altura_balanceo_doble_izq,
-        test_altura_balanceo_doble_der
+        test_altura_balanceo_doble_der,
+        test_altura_eliminacion_simple,
+        test_altura_eliminacion_doble
     };
 
     char *nombre_funciones[] = {
@@ -86,9 +88,11 @@ int itree_suite(){
         "Test altura despues de balanceo simple a la derecha",
         "Test altura despues de balanceo doble a la izquierda",
         "Test altura despues de balanceo doble a la derecha",
+        "Test altura despues de eliminacion simple",
+        "Test altura despues de eliminacion doble"
     };
 
-    int cant_funciones = 5;
+    int cant_funciones = 7;
     
     return correr_tests("Arbol de intervalos", funciones, nombre_funciones, cant_funciones);
 }

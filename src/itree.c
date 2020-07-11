@@ -72,9 +72,12 @@ ITree itree_balancear_izq(ITree arbol) {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
     arbol = itree_rotacion_simple_der(arbol);
   }
-  arbol->left->alt = itree_altura(arbol->left);
-  arbol->right->alt = itree_altura(arbol->right);
-  arbol->alt = itree_altura(arbol);
+  if(arbol->left != NULL)
+    arbol->left->alt = itree_altura(arbol->left);
+  if(arbol->right != NULL)
+    arbol->right->alt = itree_altura(arbol->right);
+  if(arbol != NULL)
+    arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -86,9 +89,12 @@ ITree itree_balancear_der(ITree arbol) {
     arbol->right = itree_rotacion_simple_der(arbol->right);
     arbol = itree_rotacion_simple_izq(arbol);
   }
-  arbol->left->alt = itree_altura(arbol->left);
-  arbol->right->alt = itree_altura(arbol->right);
-  arbol->alt = itree_altura(arbol);
+  if(arbol->left != NULL)
+    arbol->left->alt = itree_altura(arbol->left);
+  if(arbol->right != NULL)
+    arbol->right->alt = itree_altura(arbol->right);
+  if(arbol != NULL)
+    arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -172,6 +178,9 @@ ITree itree_eliminar(ITree arbol, Interval intervalo) {
     if (itree_balance_factor(arbol) < -1)
       arbol = itree_balancear_izq(arbol);
   }
+
+  if(arbol != NULL)
+    arbol->alt -= 1;
   return arbol;
 }
 

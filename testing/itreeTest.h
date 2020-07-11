@@ -10,6 +10,8 @@ void test_altura_balanceo_simple_der(void);
 void test_altura_balanceo_simple_izq(void);
 void test_altura_balanceo_doble_izq(void);
 void test_altura_balanceo_doble_der(void);
+void test_altura_eliminacion_simple(void);
+void test_altura_eliminacion_doble(void);
 
 
 #endif

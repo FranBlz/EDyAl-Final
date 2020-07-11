@@ -1,22 +1,20 @@
 #include <stdlib.h>
 #include "conjunto.h"
 
-Conjunto crear(int tipo, int set[], int cant) {
+Conjunto conjunto_crear() {
   Conjunto conj = malloc(sizeof(struct _Conjunto));
-  conj->parteExt = bstree_crear();
-  conj->parteComp = bstree_crear();
-
-  if(tipo) {
-    for(int i = 0; i < cant; i++) {
-      conj->parteExt = bstree_insertar(conj->parteExt, set[i]);
-    }
-  }
+  conj->parteExt = avltree_crear();
+  conj->parteComp = itree_crear();
 
   return conj;
 }
 
-Conjunto conjunto_unir(Conjunto c1, Conjunto c2) {
+void insertar_partes(Conjunto c1, int tipo, int set[], int cant) {
   
+}
+
+Conjunto conjunto_unir(Conjunto c1, Conjunto c2) {
+  Conjunto new = conjunto_crear();
 }
 
 // Conjunto conjunto_intersectar(Conjunto c1, Conjunto c2) {
@@ -31,6 +29,6 @@ Conjunto conjunto_unir(Conjunto c1, Conjunto c2) {
 
 // }
 
-void conjunto_eliminar(Conjunto c1) {
+// void conjunto_eliminar(Conjunto c1) {
 
-}
+// }

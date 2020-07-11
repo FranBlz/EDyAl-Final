@@ -24,7 +24,7 @@ TablaHash* tablahash_crear(unsigned capacidad, FuncionHash fun);
 
 void tablahash_insertar(TablaHash* tabla, char* clave, Conjunto dato);
 
-int tablahash_buscar(TablaHash* tabla, char* clave);
+Conjunto tablahash_buscar(TablaHash* tabla, char* clave);
 
 void tablahash_eliminar(TablaHash* tabla, char* clave);
 

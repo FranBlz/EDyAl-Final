@@ -79,7 +79,7 @@ void tablahash_redimensionar(TablaHash *tabla) {
   }
 }
 
-int tablahash_buscar(TablaHash* tabla, char* clave) {
+Conjunto tablahash_buscar(TablaHash* tabla, char* clave) {
   unsigned idx = tabla->hash(clave);
   idx = idx % tabla->capacidad;
 

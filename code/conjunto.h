@@ -1,14 +1,17 @@
 #ifndef __CONJUNTO_H__
 #define __CONJUNTO_H__
 
-#include "bstree.h"
+#include "itree.h"
+#include "AVLTree.h"
 
 typedef struct _Conjunto{
-  BSTree parteExt;
-  BSTree parteComp;
+  AVLTree parteExt;
+  ITree parteComp;
 }*Conjunto;
 
-Conjunto conjunto_crear(int tipo, int set[], int cant);
+Conjunto conjunto_crear();
+
+void insertar_partes(Conjunto c1, int tipo, int set[], int cant);
 
 Conjunto conjunto_unir(Conjunto c1, Conjunto c2);
 

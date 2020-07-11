@@ -27,7 +27,7 @@ int itree_altura(ITree arbol) {
 }
 
 int itree_balance_factor(ITree arbol) {
-  return arbol->right->alt - arbol->left->alt;
+  return itree_altura(arbol->right) - itree_altura(arbol->left);
 }
 
 double itree_max_aux(double maySub, ITree nodo2) {
@@ -48,6 +48,7 @@ ITree itree_rotacion_simple_der(ITree arbol) {
     aux->left->maySub = itree_max_sub(aux->left);
   aux->right->maySub = itree_max_sub(aux->right);
   aux->maySub = itree_max_sub(aux);
+
   return aux;
 }
 
@@ -59,6 +60,7 @@ ITree itree_rotacion_simple_izq(ITree arbol) {
     aux->right->maySub = itree_max_sub(aux->right);
   aux->left->maySub = itree_max_sub(aux->left);
   aux->maySub = itree_max_sub(aux);
+
   return aux;
 }
 
@@ -66,14 +68,13 @@ ITree itree_rotacion_simple_izq(ITree arbol) {
 ITree itree_balancear_izq(ITree arbol) {
   if (itree_balance_factor(arbol->left) <= 0) {
     arbol = itree_rotacion_simple_der(arbol);
-    arbol->left->alt = itree_altura(arbol->left);
   }else {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
-    arbol->left->alt = itree_altura(arbol->left);
-    arbol->alt = itree_altura(arbol);
     arbol = itree_rotacion_simple_der(arbol);
-    arbol->right->alt = itree_altura(arbol->right);
   }
+  arbol->left->alt = itree_altura(arbol->left);
+  arbol->right->alt = itree_altura(arbol->right);
+  arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -81,14 +82,13 @@ ITree itree_balancear_izq(ITree arbol) {
 ITree itree_balancear_der(ITree arbol) {
   if (itree_balance_factor(arbol->right) >= 0) {
     arbol = itree_rotacion_simple_izq(arbol);
-    arbol->right->alt = itree_altura(arbol->right);
   }else {
     arbol->right = itree_rotacion_simple_der(arbol->right);
-    arbol->right->alt = itree_altura(arbol->right);
-    arbol->alt = itree_altura(arbol);
     arbol = itree_rotacion_simple_izq(arbol);
-    arbol->left = itree_altura(arbol->left);
   }
+  arbol->left->alt = itree_altura(arbol->left);
+  arbol->right->alt = itree_altura(arbol->right);
+  arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -97,7 +97,7 @@ ITree create_node(Interval intervalo) {
   nodo->intervalo = malloc(sizeof(Intervalo));
   nodo->intervalo->bgn = intervalo->bgn;
   nodo->intervalo->end = intervalo->end;
-  nodo->alt = -1;
+  nodo->alt = 0;
   nodo->maySub = intervalo->end;
   nodo->left = NULL;
   nodo->right = NULL;

@@ -124,9 +124,10 @@ void tablahash_eliminar(TablaHash* tabla, char* clave) {
 
 void tablahash_destruir(TablaHash* tabla) {
   for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
-    if(tabla->tabla[idx].clave != NULL)
+    if(tabla->tabla[idx].clave != NULL) {
       free(tabla->tabla[idx].clave);
       conjunto_eliminar(tabla->tabla[idx].dato);
+    }
   }
   free(tabla->tabla);
   free(tabla);

@@ -4,7 +4,7 @@
 #include "conjunto.h"
 
 unsigned hash(char* clave) {  
-  int p = 0;
+  int p = 7;
   for(int i = 0; clave[i] != '\0'; i++)
     p = p*31 + clave[i]; //si no anda el hash es por esto (quizas)
   return p;

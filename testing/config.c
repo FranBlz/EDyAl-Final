@@ -1,6 +1,5 @@
 #include <CUnit/CUnit.h>
 #include "hashTest.h"
-#include "treeTest.h"
 #include "itreeTest.h"
 
 typedef void (*TipoFunciones) (void);
@@ -41,34 +40,22 @@ int correr_tests(char* nombre_suite, TipoFunciones funciones[], char *nombre_fun
 
 int hash_suite(){
     TipoFunciones funciones[] = {
-        test_prueba_1,
-        test_prueba_2
+        test_insertar_hash1,
+        test_insertar_hash2,
+        test_insertar_hash3,
+        test_insertar_hash4
     };
 
     char *nombre_funciones[] = {
-        "test_prueba_1",
-        "test_prueba_2"
+        "Test insertar hash1",
+        "Test insertar hash2",
+        "Test insertar hash3",
+        "Test insertar hash4"
     };
 
-    int cant_funciones = 2;
+    int cant_funciones = 4;
     
     return correr_tests("Hash suite", funciones, nombre_funciones, cant_funciones);
-}
-
-int tree_suite(){
-    TipoFunciones funciones[] = {
-        test_prueba_3,
-        test_prueba_4
-    };
-
-    char *nombre_funciones[] = {
-        "test_prueba_3",
-        "test_prueba_4"
-    };
-
-    int cant_funciones = 2;
-    
-    return correr_tests("Tree suite", funciones, nombre_funciones, cant_funciones);
 }
 
 int itree_suite(){
@@ -101,7 +88,6 @@ int main(){
 
     int failed_test = 0;
     failed_test += hash_suite();
-    failed_test += tree_suite();
     failed_test += itree_suite();
 
     CU_cleanup_registry();

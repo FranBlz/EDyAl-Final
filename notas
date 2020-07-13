@@ -25,9 +25,41 @@ void* parte_comprensio
 }
 y luego las partes son tablas hash o arboles AVL o listas enlazadas o arrays
 
+
+
+
+
+
+
+
+
+OPCIONES Y OBSERVACIONES ACTUALES:
+
+tabla hash -> itree
+tabla hash -> lista
+tabla hash -> conjunto -> avltree/itree
+tabla hash -> conjunto -> 
+
+CHEQUEAR si las alturas quedan bien luego de una eliminacion que cause
+mas de dos niveles de balanceo
+
+
+
+
+
+
+
+
+
+
+
 Paginas utiles:
 http://manpages.ubuntu.com/manpages/xenial/man3/CUnit.3.html
 https://github.com/koolkt/test_travis_cunit
 https://mysnippets443.wordpress.com/2015/03/07/ubuntu-install-cunit/
 http://cunit.sourceforge.net/doc/writing_tests.html
 https://stackoverflow.com/questions/2624192/good-hash-function-for-strings
+https://www.geeksforgeeks.org/double-hashing/
+http://www.cse.yorku.ca/~oz/hash.html
+https://courses.cs.washington.edu/courses/cse326/00wi/handouts/lecture16/sld024.htm
+

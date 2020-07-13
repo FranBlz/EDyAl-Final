@@ -3,9 +3,12 @@
 
 #include <CUnit/Automated.h>
 #include <CUnit/Basic.h>
+#include "tablahash.h"
+#include "itree.h"
 
-void test_prueba_1(void);
-void test_prueba_2(void);
-
+void test_insertar_hash1(void);
+void test_insertar_hash2(void);
+void test_insertar_hash3(void);
+void test_insertar_hash4(void);
 
 #endif

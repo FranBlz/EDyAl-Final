@@ -3,13 +3,13 @@
 
 #define LIMITE 0.7
 
-#include "conjunto.h"
+#include "itree.h"
 
 typedef unsigned (*FuncionHash)(char* clave);
 
 typedef struct _CasillaHash{
   char* clave;
-  Conjunto dato;
+  ITree dato;
   struct _CasillaHash* sig;
 } CasillaHash;
 
@@ -22,9 +22,9 @@ typedef struct {
 
 TablaHash* tablahash_crear(unsigned capacidad, FuncionHash fun);
 
-void tablahash_insertar(TablaHash* tabla, char* clave, Conjunto dato);
+void tablahash_insertar(TablaHash* tabla, char* clave, ITree dato);
 
-Conjunto tablahash_buscar(TablaHash* tabla, char* clave);
+ITree tablahash_buscar(TablaHash* tabla, char* clave);
 
 void tablahash_eliminar(TablaHash* tabla, char* clave);
 

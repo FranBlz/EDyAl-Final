@@ -1,10 +1,9 @@
 TEST1 = testing/hashTest
-ESTRUCT1 = hash
-TEST2 = testing/treeTest
-ESTRUCT2 = tree
+HASH = testing/tablahash.o
+TEST2 = testing/itreeTest
 ITREE = testing/itree.o
-TEST3 = testing/itreeTest
-DEPENDENCIAS_TEST = $(TEST1).o $(TEST2).o $(TEST3).o $(ITREE)
+
+DEPENDENCIAS_TEST = $(TEST1).o $(TEST2).o $(ITREE) $(HASH)
 
 SALIDA = salida
 
@@ -15,9 +14,6 @@ tests: testing/config.c $(DEPENDENCIAS_TEST)
 
 $(TEST1): $(TEST1).c $(TEST1).h
 	gcc -o $(TEST1).out $(TEST1).c
-
-$(TEST3): $(TEST3).c $(TEST3).h
-	gcc -c $(TEST3).c
 
 $(TEST2): $(TEST2).c $(TEST2).h
 	gcc -o $(TEST2).out $(TEST2).c

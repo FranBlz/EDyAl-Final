@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tablahash.h"
-#include "conjunto.h"
+#include "itree.h"
 
 TablaHash* tablahash_crear(unsigned capacidad, FuncionHash hash) {
   TablaHash* tabla = malloc(sizeof(TablaHash));
@@ -21,7 +21,7 @@ TablaHash* tablahash_crear(unsigned capacidad, FuncionHash hash) {
   return tabla;
 }
 
-void tablahash_insertar(TablaHash* tabla, char* clave, Conjunto dato) {
+void tablahash_insertar(TablaHash* tabla, char* clave, ITree dato) {
   unsigned idx = tabla->hash(clave);
   idx = idx % tabla->capacidad;
 
@@ -34,7 +34,9 @@ void tablahash_insertar(TablaHash* tabla, char* clave, Conjunto dato) {
       tabla->tabla[idx].sig = NULL;
     }else {
       CasillaHash* temp = tabla->tabla + idx;
-      int aux = idx + 1;
+
+      int incremento = 7 - (tabla->hash(clave) % 7) ;
+      int aux = idx + incremento;
 
       while(temp->sig != NULL) {
         temp = temp->sig;
@@ -59,9 +61,9 @@ void tablahash_redimensionar(TablaHash *tabla) {
     CasillaHash* tablaAux = malloc(sizeof(CasillaHash) * tabla->capacidad);
 
     for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
-    tablaAux[idx].clave = NULL;
-    tablaAux[idx].dato = NULL;
-    tablaAux[idx].sig = NULL;
+      tablaAux[idx].clave = NULL;
+      tablaAux[idx].dato = NULL;
+      tablaAux[idx].sig = NULL;
     }
 
     CasillaHash* temp = tabla->tabla;
@@ -79,11 +81,11 @@ void tablahash_redimensionar(TablaHash *tabla) {
   }
 }
 
-Conjunto tablahash_buscar(TablaHash* tabla, char* clave) {
+ITree tablahash_buscar(TablaHash* tabla, char* clave) {
   unsigned idx = tabla->hash(clave);
   idx = idx % tabla->capacidad;
 
-  Conjunto dato;  
+  ITree dato = itree_crear();  
   if(tabla->tabla[idx].clave != NULL) {
     CasillaHash* aux = &(tabla->tabla[idx]);
     CasillaHash* temp = NULL;
@@ -117,8 +119,10 @@ void tablahash_eliminar(TablaHash* tabla, char* clave) {
     CasillaHash* aux;
     for(aux = &(tabla->tabla[idx]); aux != NULL && ((aux->clave != NULL && (strcmp(aux->clave, clave) != 0)) || aux->dato == NULL); aux = aux->sig);
     
-    if(aux != NULL)
+    if(aux != NULL) {
+      itree_destruir(aux->dato);
       aux->dato = NULL;
+    }
   }
 }
 
@@ -126,7 +130,7 @@ void tablahash_destruir(TablaHash* tabla) {
   for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
     if(tabla->tabla[idx].clave != NULL) {
       free(tabla->tabla[idx].clave);
-      conjunto_eliminar(tabla->tabla[idx].dato);
+      itree_destruir(tabla->tabla[idx].dato);
     }
   }
   free(tabla->tabla);

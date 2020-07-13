@@ -15,6 +15,10 @@ void itree_destruir(ITree arbol) {
   }
 }
 
+int intersectar(Interval i1, Interval i2) {
+  return !(i1->end < i2->bgn || i2->end < i1->bgn);
+}
+
 // Cambiar altura para que respete las correcciones de valentina
 // 1 - la altura empieza en 1?
 // 2 - agregar un valor de altura a los nodos para no recalcular el arbol entero
@@ -30,13 +34,13 @@ int itree_balance_factor(ITree arbol) {
   return itree_altura(arbol->right) - itree_altura(arbol->left);
 }
 
-double itree_max_aux(double maySub, ITree nodo2) {
+int itree_max_aux(int maySub, ITree nodo2) {
   if (nodo2 == NULL)
     return maySub;
   return maySub > nodo2->maySub ? maySub : nodo2->maySub;
 }
 
-double itree_max_sub(ITree nodo) {
+int itree_max_sub(ITree nodo) {
   return itree_max_aux(itree_max_aux(nodo->intervalo->end, nodo->left), nodo->right);
 }
 
@@ -110,8 +114,8 @@ ITree create_node(Interval intervalo) {
   return nodo;
 }
 
-double get_direccion_arbol(Interval nodo, Interval intervalo) {
-  double inicio = intervalo->bgn - nodo->bgn;
+int get_direccion_arbol(Interval nodo, Interval intervalo) {
+  int inicio = intervalo->bgn - nodo->bgn;
   return inicio == 0 ? intervalo->end - nodo->end : inicio;
 }
 
@@ -120,7 +124,17 @@ ITree itree_insertar(ITree arbol, Interval intervalo) {
   if (arbol == NULL)
     return create_node(intervalo);
 
-  double posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+  if(intersectar(arbol->intervalo, intervalo)) {
+    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
+      return arbol;
+    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+      intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
+    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
+    }
+  }
+  int posicion = get_direccion_arbol(arbol->intervalo, intervalo);
   if (posicion < 0) {
     arbol->left = itree_insertar(arbol->left, intervalo);
     arbol->maySub = itree_max_sub(arbol);
@@ -147,7 +161,7 @@ ITree itree_eliminar(ITree arbol, Interval intervalo) {
   if (arbol == NULL)
     return arbol;
 
-  double posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+  int posicion = get_direccion_arbol(arbol->intervalo, intervalo);
 
   if (posicion == 0) {
     ITree aux = arbol;
@@ -184,10 +198,6 @@ ITree itree_eliminar(ITree arbol, Interval intervalo) {
   return arbol;
 }
 
-int intersectar(Interval i1, Interval i2) {
-  return !(i1->end < i2->bgn || i2->end < i1->bgn);
-}
-
 Interval itree_intersectar(ITree arbol, Interval intervalo) {
   if (arbol != NULL) {
     if (intersectar(arbol->intervalo, intervalo))
@@ -206,4 +216,28 @@ void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
     itree_recorrer_dfs(arbol->left, visit);
     itree_recorrer_dfs(arbol->right, visit);
   }
+}
+
+ITree itree_copiar(ITree newTree, ITree arbol) {
+  if(arbol != NULL) {
+    newTree = itree_insertar(newTree, arbol->intervalo);
+    newTree = itree_copiar(newTree, arbol->left);
+    newTree = itree_copiar(newTree, arbol->right);
+  }
+
+  return newTree;
+}
+
+ITree itree_unir(ITree arbol1, ITree arbol2) {
+  ITree newTree = itree_crear();
+
+  if(itree_altura(arbol1) >= itree_altura(arbol2)) {
+    newTree = itree_copiar(newTree, arbol1);
+    newTree = itree_copiar(newTree, arbol2);
+  }else {
+    newTree = itree_copiar(newTree, arbol2);
+    newTree = itree_copiar(newTree, arbol1);
+  }
+
+  return newTree;
 }

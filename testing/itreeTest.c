@@ -42,6 +42,9 @@ void test_altura_itree(void){
     raiz = itree_insertar(raiz, intervalo);
 
     CU_ASSERT_EQUAL(itree_altura(raiz), 3);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_balanceo_simple_der(void) {
@@ -72,6 +75,9 @@ void test_altura_balanceo_simple_der(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->left), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->left->left), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->left->right), 0);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_balanceo_simple_izq(void) {
@@ -102,6 +108,9 @@ void test_altura_balanceo_simple_izq(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->right), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->right->right), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->right->left), 0);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_balanceo_doble_izq(void) {
@@ -136,6 +145,9 @@ void test_altura_balanceo_doble_izq(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->right), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->left->left), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->left), 1);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_balanceo_doble_der(void) {
@@ -174,6 +186,9 @@ void test_altura_balanceo_doble_der(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->right), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->right->left), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->right->right), 0);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_eliminacion_simple(void) {
@@ -221,6 +236,7 @@ void test_altura_eliminacion_simple(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->right->left), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->right->right), 0);
 
+    itree_destruir(raiz);
     raiz = NULL;
     intervalo->bgn = 9;
     intervalo->end = 9;
@@ -259,6 +275,8 @@ void test_altura_eliminacion_simple(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->right->right), 0);
     CU_ASSERT_EQUAL(itree_altura(raiz->left), 1);
 
+    itree_destruir(raiz);
+    free(intervalo);
 }
 
 void test_altura_eliminacion_doble(void) {
@@ -295,6 +313,7 @@ void test_altura_eliminacion_doble(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz->left), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->right), 1);
 
+    itree_destruir(raiz);
     raiz = itree_crear();
     intervalo->bgn = 10;
     intervalo->end = 10;
@@ -327,4 +346,7 @@ void test_altura_eliminacion_doble(void) {
     CU_ASSERT_EQUAL(itree_altura(raiz), 2);
     CU_ASSERT_EQUAL(itree_altura(raiz->left), 1);
     CU_ASSERT_EQUAL(itree_altura(raiz->right), 1);
+
+    itree_destruir(raiz);
+    free(intervalo);
 }

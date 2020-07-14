@@ -13,5 +13,6 @@ void test_insertar_hash4(void);
 void test_insertar_hash5(void);
 void test_insertar_hash6(void);
 void test_insertar_hash7(void);
+void test_insertar_hash8(void);
 
 #endif

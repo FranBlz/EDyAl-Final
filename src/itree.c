@@ -8,9 +8,9 @@ ITree itree_crear() {
 
 void itree_destruir(ITree arbol) {
   if (arbol != NULL) {
+    free(arbol->intervalo);
     itree_destruir(arbol->left);
     itree_destruir(arbol->right);
-    free(arbol->intervalo);
     free(arbol);
   }
 }
@@ -128,9 +128,10 @@ ITree itree_insertar(ITree arbol, Interval intervalo) {
   restore->bgn = intervalo->bgn; //dudoso si dejar todo esto
   restore->end = intervalo->end;
 
+  // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
   if(intersectar(arbol->intervalo, intervalo)) {
     if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
-      // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
+      free(restore);
       return arbol;
     }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
@@ -259,34 +260,74 @@ ITree itree_unir(ITree arbol1, ITree arbol2) {
   return newTree;
 }
 
-// ITree itree_interseccion(ITree arbol1, ITree arbol2) {
-//   ITree result = itree_crear();
-//   itree_interseccion_aux(arbol1, arbol2, result);
+ITree itree_interseccion(ITree arbol1, ITree arbol2) {
+  ITree result = itree_crear();
+  result = itree_interseccion_aux1(arbol1, arbol2, result);
+  return result;
+}
 
-//   return result;
-// }
+ITree itree_interseccion_aux1(ITree arbol1, ITree arbol2, ITree result) {
+  if(arbol1 == NULL) {
+    return result;
+  }
 
-// void itree_interseccion_aux(ITree arbol1, ITree arbol2, ITree result) {
-//   Interval restore = malloc(sizeof(Intervalo));
-//   restore->bgn = intervalo->bgn; //dudoso si dejar todo esto
-//   restore->end = intervalo->end;
+  result = itree_interseccion_aux2(arbol1->intervalo, arbol2, result);
+  result = itree_interseccion_aux1(arbol1->left, arbol2, result);
+  result = itree_interseccion_aux1(arbol1->right, arbol2, result);
 
-//   if(intersectar(arbol1->intervalo, intervalo)) {
-//     if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
-//       // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
-//       return arbol;
-//     }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
-//       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
-//     }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
-//       intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
-//     }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
-//       Interval aux = malloc(sizeof(Intervalo));
-//       aux->bgn = intervalo->bgn;
-//       aux->end = arbol->intervalo->bgn - 1;
-//       intervalo->bgn = arbol->intervalo->end + 1;
+  return result;
+}
 
-//       arbol = itree_insertar(arbol, aux);
-//       free(aux);
-//     }
-//   }
-// }
+ITree itree_interseccion_aux2(Interval intervalo, ITree arbol, ITree result) {
+  if(arbol == NULL)
+    return result;
+  
+  int posicion;
+  Interval restore = malloc(sizeof(Intervalo));
+  restore->bgn = intervalo->bgn; //dudoso si dejar todo esto
+  restore->end = intervalo->end;
+  
+  if(intersectar(arbol->intervalo, intervalo)) {
+    Interval aux = malloc(sizeof(Intervalo));
+    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      result = itree_insertar(result, intervalo);
+    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+      aux->bgn = intervalo->bgn;
+      aux->end = arbol->intervalo->end;
+      result = itree_insertar(result, aux);
+      intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
+    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      aux->bgn = arbol->intervalo->bgn;
+      aux->end = intervalo->end;
+      result = itree_insertar(result, aux);
+      intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
+    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+      aux->bgn = arbol->intervalo->bgn;
+      aux->end = arbol->intervalo->end;
+      result = itree_insertar(result, aux);
+      aux->bgn = intervalo->bgn;
+      aux->end = arbol->intervalo->bgn - 1;
+      intervalo->bgn = arbol->intervalo->end + 1;
+      posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+      if (posicion < 0) {
+        result = itree_interseccion_aux2(aux, arbol->left, result);
+      } else if (posicion > 0) {
+        result = itree_interseccion_aux2(aux, arbol->right, result);
+      }
+    }
+    free(aux);
+  }
+
+  posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+  if (posicion < 0) {
+    result = itree_interseccion_aux2(intervalo, arbol->left, result);
+  } else if (posicion > 0) {
+    result = itree_interseccion_aux2(intervalo, arbol->right, result);
+  }
+
+  intervalo->bgn = restore->bgn; //dudoso si dejar todo esto
+  intervalo->end = restore->end;
+  free(restore);
+
+  return result;
+}

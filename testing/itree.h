@@ -65,4 +65,5 @@ ITree itree_copiar(ITree newTree, ITree arbol);
 
 ITree itree_unir(ITree arbol1, ITree arbol2);
 
+ITree itree_interseccion(ITree arbol1, ITree arbol2);
 #endif

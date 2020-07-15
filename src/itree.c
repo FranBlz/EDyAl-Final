@@ -51,7 +51,9 @@ ITree itree_rotacion_simple_der(ITree arbol) {
   if (aux->left != NULL)
     aux->left->maySub = itree_max_sub(aux->left);
   aux->right->maySub = itree_max_sub(aux->right);
+  aux->right->alt = itree_altura(aux->right);
   aux->maySub = itree_max_sub(aux);
+  aux->alt = itree_altura(aux);
 
   return aux;
 }
@@ -63,7 +65,9 @@ ITree itree_rotacion_simple_izq(ITree arbol) {
   if (aux->right != NULL)
     aux->right->maySub = itree_max_sub(aux->right);
   aux->left->maySub = itree_max_sub(aux->left);
+  aux->left->alt = itree_altura(aux->left);
   aux->maySub = itree_max_sub(aux);
+  aux->alt = itree_altura(aux);
 
   return aux;
 }
@@ -76,12 +80,12 @@ ITree itree_balancear_izq(ITree arbol) {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
     arbol = itree_rotacion_simple_der(arbol);
   }
-  if(arbol->left != NULL)
-    arbol->left->alt = itree_altura(arbol->left);
-  if(arbol->right != NULL)
-    arbol->right->alt = itree_altura(arbol->right);
-  if(arbol != NULL)
-    arbol->alt = itree_altura(arbol);
+  // if(arbol->left != NULL)
+  //   arbol->left->alt = itree_altura(arbol->left);
+  // if(arbol->right != NULL)
+  //   arbol->right->alt = itree_altura(arbol->right);
+  // if(arbol != NULL)
+  //   arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -93,12 +97,12 @@ ITree itree_balancear_der(ITree arbol) {
     arbol->right = itree_rotacion_simple_der(arbol->right);
     arbol = itree_rotacion_simple_izq(arbol);
   }
-  if(arbol->left != NULL)
-    arbol->left->alt = itree_altura(arbol->left);
-  if(arbol->right != NULL)
-    arbol->right->alt = itree_altura(arbol->right);
-  if(arbol != NULL)
-    arbol->alt = itree_altura(arbol);
+  // if(arbol->left != NULL)
+  //   arbol->left->alt = itree_altura(arbol->left);
+  // if(arbol->right != NULL)
+  //   arbol->right->alt = itree_altura(arbol->right);
+  // if(arbol != NULL)
+  //   arbol->alt = itree_altura(arbol);
   return arbol;
 }
 

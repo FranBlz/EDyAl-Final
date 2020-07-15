@@ -387,18 +387,19 @@ void test_insertar_hash10(void){
   ITree arbol = itree_crear();
   Interval intervalo = malloc(sizeof(Intervalo));
 
-  intervalo->bgn = 3;
-  intervalo->end = 3;
+  arbol = itree_crear();
+  intervalo->bgn = 5;
+  intervalo->end = 5;
   arbol = itree_insertar(arbol, intervalo);
   intervalo->bgn = 1;
-  intervalo->end = 1;
+  intervalo->end = 3;
   arbol = itree_insertar(arbol, intervalo);
-  // intervalo->bgn = 4;
-  // intervalo->end = 10;
-  // arbol = itree_insertar(arbol, intervalo);
-  // intervalo->bgn = 6;
-  // intervalo->end = 8;
-  // arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 9;
+  intervalo->end = 9;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = -1;
+  intervalo->end = 6;
+  arbol = itree_insertar(arbol, intervalo);
   tablahash_insertar(newTable, "Arbolete", arbol);
 
   arbol = itree_crear();
@@ -406,6 +407,59 @@ void test_insertar_hash10(void){
   tablahash_insertar(newTable, "Resultado", arbol);
   
   itree_recorrer_dfs(tablahash_buscar(newTable, "Resultado"), imprimir_intervalo);
+
+  tablahash_destruir(newTable);
+  free(intervalo);
+}
+
+void test_insertar_hash11(void){
+  TablaHash* newTable = tablahash_crear(31, hash);
+  ITree arbol = itree_crear();
+  Interval intervalo = malloc(sizeof(Intervalo));
+
+  intervalo->bgn = 2;
+  intervalo->end = 4;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 1;
+  intervalo->end = 1;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 9;
+  intervalo->end = 9;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 6;
+  intervalo->end = 8;
+  arbol = itree_insertar(arbol, intervalo);
+  tablahash_insertar(newTable, "Arbolete", arbol);
+
+  arbol = itree_crear();
+  intervalo->bgn = 5;
+  intervalo->end = 5;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 1;
+  intervalo->end = 3;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = 8;
+  intervalo->end = 8;
+  arbol = itree_insertar(arbol, intervalo);
+  intervalo->bgn = -1;
+  intervalo->end = 7;
+  arbol = itree_insertar(arbol, intervalo);
+  tablahash_insertar(newTable, "Arbusto", arbol);
+
+  arbol = itree_crear();
+  arbol = itree_diferencia(tablahash_buscar(newTable, "Arbolete"), tablahash_buscar(newTable, "Arbusto"));
+  tablahash_insertar(newTable, "Resultado1", arbol);
+  arbol = itree_crear();
+  arbol = itree_diferencia(tablahash_buscar(newTable, "Arbusto"), tablahash_buscar(newTable, "Arbolete"));
+  tablahash_insertar(newTable, "Resultado2", arbol);
+
+  itree_recorrer_dfs(tablahash_buscar(newTable, "Arbolete"), imprimir_intervalo);
+  puts("");
+  itree_recorrer_dfs(tablahash_buscar(newTable, "Arbusto"), imprimir_intervalo);
+  puts("");
+  itree_recorrer_dfs(tablahash_buscar(newTable, "Resultado1"), imprimir_intervalo);
+  puts("");
+  itree_recorrer_dfs(tablahash_buscar(newTable, "Resultado2"), imprimir_intervalo);
 
   tablahash_destruir(newTable);
   free(intervalo);

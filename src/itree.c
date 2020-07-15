@@ -108,8 +108,25 @@ ITree create_node(Interval intervalo) {
 }
 
 int get_direccion_arbol(Interval nodo, Interval intervalo) {
-  int inicio = intervalo->bgn - nodo->bgn;
-  return inicio == 0 ? intervalo->end - nodo->end : inicio;
+  int inicio = 0;
+  
+  if(intervalo->bgn < nodo->bgn) {
+    inicio = -1;
+  }else if(intervalo->bgn > nodo->bgn) {
+    inicio = 1;
+  }
+
+  if(inicio == 0) {
+    if(intervalo->end < nodo->end) {
+      inicio = -1;
+    }else if(intervalo->end > nodo->end) {
+      inicio = 1;
+    }
+  }
+  
+  // int inicio = intervalo->bgn - nodo->bgn;
+  //  == 0 ? intervalo->end - nodo->end : inicio
+  return inicio;
 }
 
 // plantear correccion de valentina, usar bandera para no rebalancear hacia arriba constantemente
@@ -328,8 +345,8 @@ ITree itree_interseccion_aux2(Interval intervalo, ITree arbol, ITree result) {
 ITree itree_complemento(ITree arbol) {
   ITree result = itree_crear();
   Interval intervalo = malloc(sizeof(Intervalo));
-  intervalo->bgn = -10;
-  intervalo->end = 10;
+  intervalo->bgn = INT_MIN;
+  intervalo->end = INT_MAX;
   result = itree_complemento_aux(result, arbol, intervalo);
   free(intervalo);
   return result;
@@ -365,6 +382,67 @@ ITree itree_complemento_aux(ITree result, ITree arbol, Interval intervalo) {
   } else if (posicion > 0) {
     result = itree_complemento_aux(result, arbol->right, intervalo);
   }
+
+  return result;
+}
+
+ITree itree_diferencia(ITree arbol1, ITree arbol2) {
+  ITree result = itree_crear();
+  result = itree_diferencia_aux1(arbol1, arbol2, result);
+  return result;
+}
+
+ITree itree_diferencia_aux1(ITree arbol1, ITree arbol2, ITree result) {
+  if(arbol1 == NULL) {
+    return result;
+  }
+
+  result = itree_diferencia_aux2(arbol1->intervalo, arbol2, result);
+  result = itree_diferencia_aux1(arbol1->left, arbol2, result);
+  result = itree_diferencia_aux1(arbol1->right, arbol2, result);
+
+  return result;
+}
+
+ITree itree_diferencia_aux2(Interval intervalo, ITree arbol, ITree result) {
+  if (arbol == NULL) {
+    result = itree_insertar(result, intervalo);
+    return result;
+  }
+
+  Interval restore = malloc(sizeof(Intervalo));
+  restore->bgn = intervalo->bgn; //dudoso si dejar todo esto
+  restore->end = intervalo->end;
+
+  // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
+  if(intersectar(arbol->intervalo, intervalo)) {
+    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      return result;
+    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+      intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
+    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
+    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+      Interval aux = malloc(sizeof(Intervalo));
+      aux->bgn = intervalo->bgn;
+      aux->end = arbol->intervalo->bgn - 1;
+      intervalo->bgn = arbol->intervalo->end + 1;
+
+      result = itree_diferencia_aux2(aux, arbol, result);
+      free(aux);
+    }
+  }
+
+  int posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+  if (posicion < 0) {
+    result = itree_diferencia_aux2(intervalo, arbol->left, result);
+  } else if (posicion > 0) {
+    result = itree_diferencia_aux2(intervalo, arbol->right, result);
+  }
+
+  intervalo->bgn = restore->bgn; //dudoso si dejar todo esto
+  intervalo->end = restore->end;
+  free(restore);
 
   return result;
 }

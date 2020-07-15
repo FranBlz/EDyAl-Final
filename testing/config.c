@@ -49,7 +49,8 @@ int hash_suite(){
         // test_insertar_hash7,
         // test_insertar_hash8,
         // test_insertar_hash9,
-        test_insertar_hash10
+        // test_insertar_hash10,
+        test_insertar_hash11
     };
 
     char *nombre_funciones[] = {
@@ -62,7 +63,8 @@ int hash_suite(){
         // "Test insertar hash7",
         // "Test insertar hash8",
         // "Test insertar hash9",
-        "Test insertar hash10"
+        // "Test insertar hash10",
+        "Test insertar hash11"
     };
 
     int cant_funciones = 1;

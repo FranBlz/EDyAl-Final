@@ -22,4 +22,4 @@ main:
 	cd ./src/ && make && mv ./*.o ../testing && cp ./*.h ../testing
 
 clean:
-	rm config.out testing/*.o testing/itree.h
+	rm config.out testing/*.o testing/itree.h testing/tablahash.h

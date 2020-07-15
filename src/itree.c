@@ -1,6 +1,7 @@
 #include "itree.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
 ITree itree_crear() {
   return NULL;
@@ -80,12 +81,6 @@ ITree itree_balancear_izq(ITree arbol) {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
     arbol = itree_rotacion_simple_der(arbol);
   }
-  // if(arbol->left != NULL)
-  //   arbol->left->alt = itree_altura(arbol->left);
-  // if(arbol->right != NULL)
-  //   arbol->right->alt = itree_altura(arbol->right);
-  // if(arbol != NULL)
-  //   arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -97,12 +92,6 @@ ITree itree_balancear_der(ITree arbol) {
     arbol->right = itree_rotacion_simple_der(arbol->right);
     arbol = itree_rotacion_simple_izq(arbol);
   }
-  // if(arbol->left != NULL)
-  //   arbol->left->alt = itree_altura(arbol->left);
-  // if(arbol->right != NULL)
-  //   arbol->right->alt = itree_altura(arbol->right);
-  // if(arbol != NULL)
-  //   arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -332,6 +321,50 @@ ITree itree_interseccion_aux2(Interval intervalo, ITree arbol, ITree result) {
   intervalo->bgn = restore->bgn; //dudoso si dejar todo esto
   intervalo->end = restore->end;
   free(restore);
+
+  return result;
+}
+
+ITree itree_complemento(ITree arbol) {
+  ITree result = itree_crear();
+  Interval intervalo = malloc(sizeof(Intervalo));
+  intervalo->bgn = -10;
+  intervalo->end = 10;
+  result = itree_complemento_aux(result, arbol, intervalo);
+  free(intervalo);
+  return result;
+}
+
+ITree itree_complemento_aux(ITree result, ITree arbol, Interval intervalo) {
+  if (arbol == NULL) {
+    result = itree_insertar(result, intervalo);
+    return result;
+  }
+  // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
+  if(intersectar(arbol->intervalo, intervalo)) {
+    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      return result;
+    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+      intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
+    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
+    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+      Interval aux = malloc(sizeof(Intervalo));
+      aux->bgn = intervalo->bgn;
+      aux->end = arbol->intervalo->bgn - 1;
+      intervalo->bgn = arbol->intervalo->end + 1;
+
+      result = itree_complemento_aux(result, arbol, aux);
+      free(aux);
+    }
+  }
+
+  int posicion = get_direccion_arbol(arbol->intervalo, intervalo);
+  if (posicion < 0) {
+    result = itree_complemento_aux(result, arbol->left, intervalo);
+  } else if (posicion > 0) {
+    result = itree_complemento_aux(result, arbol->right, intervalo);
+  }
 
   return result;
 }

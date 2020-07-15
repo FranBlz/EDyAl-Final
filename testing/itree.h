@@ -69,4 +69,7 @@ ITree itree_interseccion(ITree arbol1, ITree arbol2);
 ITree itree_interseccion_aux1(ITree arbol1, ITree arbol2, ITree result);
 ITree itree_interseccion_aux2(Interval intervalo, ITree arbol, ITree result);
 
+ITree itree_complemento(ITree arbol);
+ITree itree_complemento_aux(ITree result, ITree arbol, Interval intervalo);
+
 #endif

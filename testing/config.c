@@ -40,31 +40,11 @@ int correr_tests(char* nombre_suite, TipoFunciones funciones[], char *nombre_fun
 
 int hash_suite(){
     TipoFunciones funciones[] = {
-        // test_insertar_hash1,
-        // test_insertar_hash2,
-        // test_insertar_hash3,
-        // test_insertar_hash4,
-        // test_insertar_hash5,
-        // test_insertar_hash6,
-        // test_insertar_hash7,
-        // test_insertar_hash8,
-        // test_insertar_hash9,
-        // test_insertar_hash10,
-        test_insertar_hash11
+        test_operaciones1
     };
 
     char *nombre_funciones[] = {
-        // "Test insertar hash1",
-        // "Test insertar hash2",
-        // "Test insertar hash3",
-        // "Test insertar hash4",
-        // "Test insertar hash5",
-        // "Test insertar hash6",
-        // "Test insertar hash7",
-        // "Test insertar hash8",
-        // "Test insertar hash9",
-        // "Test insertar hash10",
-        "Test insertar hash11"
+        "Test operaciones 1"
     };
 
     int cant_funciones = 1;

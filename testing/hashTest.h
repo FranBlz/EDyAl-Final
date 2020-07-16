@@ -7,5 +7,6 @@
 #include "itree.h"
 
 void test_operaciones1(void);
+void test_operaciones2(void);
 
 #endif

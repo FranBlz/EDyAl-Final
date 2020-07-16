@@ -40,14 +40,16 @@ int correr_tests(char* nombre_suite, TipoFunciones funciones[], char *nombre_fun
 
 int hash_suite(){
     TipoFunciones funciones[] = {
-        test_operaciones1
+        test_operaciones1,
+        test_operaciones2
     };
 
     char *nombre_funciones[] = {
-        "Test operaciones 1"
+        "Test operaciones 1",
+        "Test operaciones 2"
     };
 
-    int cant_funciones = 1;
+    int cant_funciones = 2;
     
     return correr_tests("Hash suite", funciones, nombre_funciones, cant_funciones);
 }

@@ -417,6 +417,7 @@ ITree itree_diferencia_aux2(Interval intervalo, ITree arbol, ITree result) {
   // printf("\n%d : %d\n%d : %d\n", intervalo->bgn, intervalo->end, arbol->intervalo->bgn, arbol->intervalo->end);
   if(intersectar(arbol->intervalo, intervalo)) {
     if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+      free(restore);
       return result;
     }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;

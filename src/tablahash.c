@@ -41,7 +41,7 @@ void tablahash_insertar(TablaHash* tabla, char* clave, ITree dato) {
       while(temp->sig != NULL) {
         temp = temp->sig;
       }
-      for(; tabla->tabla[aux % tabla->capacidad].clave != NULL; aux++);
+      for(; tabla->tabla[aux % tabla->capacidad].clave != NULL; aux += incremento);
       
       tabla->tabla[aux % tabla->capacidad].clave = malloc(sizeof(char) * strlen(clave) + 1);
       strcpy(tabla->tabla[aux % tabla->capacidad].clave, clave);

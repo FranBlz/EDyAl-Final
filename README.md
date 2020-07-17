@@ -17,3 +17,5 @@
     * cambiar funciones hash1 y hash2 por algunas mas consistentes (sobretodo hash2)
     * para ingresar un conjunto con nombre ya ocupado, generar el arbol nuevo, borrar el indice anterior y luego insertar
     * considerar linear probing con un indice de carga bajo y una buena funcion de hash inicial
+    * definir un tipo de open adressing para la tabla hash
+    * modificar la tabla hash para que la busqueda y eliminacion tambien usen el modelo de open adressing

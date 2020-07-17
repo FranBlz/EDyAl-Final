@@ -2,11 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "itree.h"
 #include "tablahash.h"
-
-#define CANT_OPCIONES 6
-#define MAX_DIGITS_DOUBLE 320
+#include "itree.h"
 
 // #define OPCION_INCORRECTA -1
 // #define FORMATO_INTERVALO_INCORRECTO -2
@@ -34,48 +31,76 @@ static void imprimir_intervalo(Interval intervalo) {
 int verificar_opcion(char opcion[]) {
   if (opcion == NULL)
     return ERROR;
-  if (strcmp(opcion, "salir"))
+  if (!strcmp(opcion, "salir")) {
+    opcion = strtok(NULL, "");
+    if(opcion != NULL)
+      return ERROR;
     return SALIR;
-  if (strcmp(opcion, "imprimir"))
+  }
+  if (!strcmp(opcion, "imprimir"))
     return IMPRIMIR;
   
   int flag = 1;
-  for(int i = 0; opcion[i] != '\0'; i++) {
+  for(int i = 0; opcion[i] != '\0' && flag == 1; i++) {
     if(!isalpha(opcion[i]))
       flag = 0;
   }
   if(flag) 
     return OPERACION;
+
+  return ERROR;
+}
+
+int get_alias(char* ptr) {
+  int flag = 1;
+  if (ptr == NULL)
+    flag = 0;
+  for(int i = 0; ptr[i] != '\0' && flag == 1; i++) {
+    if(!isalpha(ptr[i]))
+      flag = 0;
+  }
+  return flag;
 }
 
 int main() {
-  int end = 0 , opcion;
+  int end = 0, opcion;
   char buff[256];
   char *ptr;
 
   Interval intervalo = malloc(sizeof(Intervalo));
+  intervalo->bgn = 1;
+  intervalo->end = 2;
   ITree raiz = itree_crear();
 
   while (!end) {
-    scanf("%[^\n]", buff);
+    printf("Interprete:\n");
+    scanf("%9[^\n]", buff);
     getchar();
-
     ptr = strtok(buff, " ");
+
+    // printf("%s\n", ptr);
 
     opcion = verificar_opcion(ptr);
 
     switch (opcion) {
     case 0:
-      printf("\nSALIR\n");
+      printf("SALIR\n");
+      end = 1;
       break;
     case 1:
-      printf("\nIMPRIMIR\n");
+      ptr = strtok(NULL, "");
+      if(get_alias(ptr) == 1) {
+        printf("IMPRIMIR %s\n", ptr);
+        imprimir_intervalo(intervalo);
+      }else {
+        printf("ERROR\n");
+      }
       break;
     case 2:
-      printf("\nOPERACION\n");
+      printf("OPERACION\n");
       break;
     case -1:
-      printf("\nERROR\n");
+      printf("ERROR\n");
       break;
     }
   }

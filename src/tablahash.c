@@ -62,7 +62,7 @@ void tablahash_redimensionar(TablaHash *tabla) {
     tabla->numElems = 0;
     tabla->tabla = tablaAux;
 
-    for(int i = 0; i < (tabla->capacidad / 2); i++) {
+    for(unsigned i = 0; i < (tabla->capacidad / 2); i++) {
       if(temp[i].dato != NULL)
         tablahash_insertar(tabla, temp[i].clave, temp[i].dato);
       if(temp[i].clave != NULL)

@@ -28,44 +28,23 @@ static void imprimir_intervalo(Interval intervalo) {
   printf("[%d, %d] ", intervalo->bgn, intervalo->end);
 }
 
-int verificar_opcion(char opcion[]) {
-  if (opcion == NULL)
+int verificar_opcion(char first[], char rest[]) {
+  if (first == NULL)
     return ERROR;
-  if (!strcmp(opcion, "salir")) {
-    opcion = strtok(NULL, "");
-    if(opcion != NULL)
-      return ERROR;
+  if (!strcmp(first, "salir") && (!strcmp(rest, "\n") || !strcmp(rest, "\0")))
     return SALIR;
-  }
-  if (!strcmp(opcion, "imprimir"))
+  if (!strcmp(first, "imprimir"))
     return IMPRIMIR;
-  
-  int flag = 1;
-  for(int i = 0; opcion[i] != '\0' && flag == 1; i++) {
-    if(!isalpha(opcion[i]))
-      flag = 0;
-  }
-  if(flag) 
-    return OPERACION;
 
   return ERROR;
-}
-
-int get_alias(char* ptr) {
-  int flag = 1;
-  if (ptr == NULL)
-    flag = 0;
-  for(int i = 0; ptr[i] != '\0' && flag == 1; i++) {
-    if(!isalpha(ptr[i]))
-      flag = 0;
-  }
-  return flag;
 }
 
 int main() {
   int end = 0, opcion;
   char buff[256];
-  char *ptr;
+  char *first, *rest;
+  first = malloc(sizeof(char)*256);
+  rest = malloc(sizeof(char)*256);
 
   Interval intervalo = malloc(sizeof(Intervalo));
   intervalo->bgn = 1;
@@ -74,13 +53,19 @@ int main() {
 
   while (!end) {
     printf("Interprete:\n");
-    scanf("%9[^\n]", buff);
-    getchar();
-    ptr = strtok(buff, " ");
+    if(fgets(buff, 256, stdin) != NULL) {
+      if(buff[strlen(buff) - 1] == '\n') {
+        sscanf(buff, "%s %[^\n]", first, rest);
+      }else {
+        for(char ch = getchar(); ch != '\n'; ch = getchar());
+        printf("Excedio el limite de caracteres (254)\n");
+      }
+    }
 
-    // printf("%s\n", ptr);
+    printf("FIRST %s\n", first);
+    printf("REST %s\n", rest);
 
-    opcion = verificar_opcion(ptr);
+    opcion = verificar_opcion(first, rest);
 
     switch (opcion) {
     case 0:
@@ -88,13 +73,8 @@ int main() {
       end = 1;
       break;
     case 1:
-      ptr = strtok(NULL, "");
-      if(get_alias(ptr) == 1) {
-        printf("IMPRIMIR %s\n", ptr);
-        imprimir_intervalo(intervalo);
-      }else {
-        printf("ERROR\n");
-      }
+      printf("IMPRIMIR\n");
+      imprimir_intervalo(intervalo);
       break;
     case 2:
       printf("OPERACION\n");
@@ -103,8 +83,13 @@ int main() {
       printf("ERROR\n");
       break;
     }
+    puts("");
+    first[0] = '\0';
+    rest[0] = '\0';
   }
 
   free(intervalo);
+  free(first);
+  free(rest);
   itree_destruir(raiz);
 }

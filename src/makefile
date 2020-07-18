@@ -17,4 +17,4 @@ main: interprete.c $(ESTRUCTURA1).o $(ESTRUCTURA2).o
 	gcc $(FLAGS) -o $(SALIDA) interprete.c $(ESTRUCTURA1).o $(ESTRUCTURA2).o
 
 clean: 
-	rm *.o vgcore*
+	rm *.o salida

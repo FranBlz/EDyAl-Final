@@ -4,7 +4,7 @@
 unsigned hash(char* clave) {  
   int p = 7;
   for(int i = 0; clave[i] != '\0'; i++)
-    p = (p * 31) + clave[i]; //si no anda el hash es por esto (quizas)
+    p = (p * 31) + clave[i];
   return p;
 }
 
@@ -56,28 +56,28 @@ void test_operaciones1(void) {
   tablahash_insertar(newTable, "B", arbol);
 
   arbol = itree_crear();
-  arbol = itree_unir(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"));
+  arbol = itree_unir(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"), arbol);
   tablahash_insertar(newTable, "UNION", arbol);
   arbol = itree_crear();
-  arbol = itree_interseccion(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"));
+  arbol = itree_interseccion(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"), arbol);
   tablahash_insertar(newTable, "INTERSECCION", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "B"), arbol);
   tablahash_insertar(newTable, "AminusB", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "B"), tablahash_buscar(newTable, "A"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "B"), tablahash_buscar(newTable, "A"), arbol);
   tablahash_insertar(newTable, "BminusA", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "UNION"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "UNION"), arbol);
   tablahash_insertar(newTable, "AminusUNION", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "B"), tablahash_buscar(newTable, "UNION"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "B"), tablahash_buscar(newTable, "UNION"), arbol);
   tablahash_insertar(newTable, "BminusUNION", arbol);
   arbol = itree_crear();
-  arbol = itree_complemento(tablahash_buscar(newTable, "A"));
+  arbol = itree_complemento(tablahash_buscar(newTable, "A"), arbol);
   tablahash_insertar(newTable, "compA", arbol);
   arbol = itree_crear();
-  arbol = itree_complemento(tablahash_buscar(newTable, "B"));
+  arbol = itree_complemento(tablahash_buscar(newTable, "B"), arbol);
   tablahash_insertar(newTable, "compB", arbol);
 
   puts("");
@@ -146,22 +146,22 @@ void test_operaciones2(void) {
   tablahash_insertar(newTable, "N2", arbol);
   
   arbol = itree_crear();
-  arbol = itree_unir(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"));
+  arbol = itree_unir(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"), arbol);
   tablahash_insertar(newTable, "N3", arbol);
   arbol = itree_crear();
-  arbol = itree_interseccion(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"));
+  arbol = itree_interseccion(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"), arbol);
   tablahash_insertar(newTable, "N4", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "N2"), arbol);
   tablahash_insertar(newTable, "N5", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "A"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "N1"), tablahash_buscar(newTable, "A"), arbol);
   tablahash_insertar(newTable, "N6", arbol);
   arbol = itree_crear();
-  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "N2"));
+  arbol = itree_diferencia(tablahash_buscar(newTable, "A"), tablahash_buscar(newTable, "N2"), arbol);
   tablahash_insertar(newTable, "A2", arbol);
   arbol = itree_crear();
-  arbol = itree_complemento(tablahash_buscar(newTable, "N1"));
+  arbol = itree_complemento(tablahash_buscar(newTable, "N1"), arbol);
   tablahash_insertar(newTable, "U", arbol);
   
   puts("");

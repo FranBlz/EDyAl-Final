@@ -61,19 +61,16 @@ Interval itree_intersectar(ITree arbol, Interval intervalo);
 **/
 void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit);
 
+ITree itree_unir(ITree arbol1, ITree arbol2, ITree newTree);
 ITree itree_copiar(ITree newTree, ITree arbol);
 
-ITree itree_unir(ITree arbol1, ITree arbol2);
+ITree itree_interseccion(ITree arbol1, ITree arbol2, ITree result);
+ITree itree_interseccion_aux(Interval intervalo, ITree arbol, ITree result);
 
-ITree itree_interseccion(ITree arbol1, ITree arbol2);
-ITree itree_interseccion_aux1(ITree arbol1, ITree arbol2, ITree result);
-ITree itree_interseccion_aux2(Interval intervalo, ITree arbol, ITree result);
+ITree itree_complemento(ITree arbol, ITree result);
+ITree itree_complemento_aux(ITree arbol, Interval intervalo, ITree result);
 
-ITree itree_complemento(ITree arbol);
-ITree itree_complemento_aux(ITree result, ITree arbol, Interval intervalo);
-
-ITree itree_diferencia(ITree arbol1, ITree arbol2);
-ITree itree_diferencia_aux1(ITree arbol1, ITree arbol2, ITree result);
-ITree itree_diferencia_aux2(Interval intervalo, ITree arbol, ITree result);
+ITree itree_diferencia(ITree arbol1, ITree arbol2, ITree result);
+ITree itree_diferencia_aux(Interval intervalo, ITree arbol, ITree result);
 
 #endif

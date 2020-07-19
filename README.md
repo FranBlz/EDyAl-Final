@@ -21,3 +21,4 @@
     * modificar la tabla hash para que la busqueda y eliminacion tambien usen el modelo de open adressing
     * si busco un elemento que no esta, y hago una operacion, esta se hace con NULL, lo cual no es correcto (modificar la busqueda o algo para que se distinga un elemento que no existe ocn uno vacio)
     * agregar modificaciones necesarias para lograr la existencia y buen comportamiento de conjuntos vacios
+    * atento al error de obtener basura en scnd

@@ -40,104 +40,169 @@ int check_alpha(char word[]) {
   return flag;
 }
 
-int verificar_opcion(char first[], char cond[], char rest[]) {
+int verificar_opcion(char first[], char rest[]) {
   if (first == NULL) {
     return ERROR;
   }else if (!strcmp(first, "salir")) {
-    if (!strcmp(cond, "\0"))
+    if (rest == NULL)
       return SALIR;
   }else if (!strcmp(first, "imprimir")) {
-    if(check_alpha(cond) && !strcmp(rest, "\0"))
+    if(rest != NULL && check_alpha(rest))
       return IMPRIMIR;
-  }else if(check_alpha(first) && !strcmp(cond, "=") && strcmp(rest, "\0")) {
+  }else if(rest != NULL && check_alpha(first)) {
     return OPERACION;
   }
 
   return ERROR;
 }
 
-
-void define_operacion(char alias[], char op[], char aux[], TablaHash *tabla) {
-  char *first = malloc(sizeof(char)*256);
-  char *scnd = malloc(sizeof(char)*256);
-  char *thrd = malloc(sizeof(char)*256);
-  first[0] = '\0';
-  scnd[0] = '\0';
-  thrd[0] = '\0';
-
-  printf("OP %s\n", op);
-
-  sscanf(op, "%s %s %s %[^\n]", first, scnd, thrd, aux);
-
-  if(!strcmp(aux, "\0") && (check_alpha(first) && check_alpha(thrd))) {
-    if(!strcmp(scnd, "|")) {
-      printf("UNION\n");
-      printf("FIRST %s\n", first);
-      printf("SCND %s\n", scnd);
-      printf("THRD %s\n", thrd);
-      printf("REST %s\n", aux);
-    }else if(!strcmp(scnd, "&")) {
-      printf("INTERSECCION\n");
-      printf("FIRST %s\n", first);
-      printf("SCND %s\n", scnd);
-      printf("THRD %s\n", thrd);
-      printf("REST %s\n", aux);
-    }else if(!strcmp(scnd, "-")) {
-      printf("RESTA\n");
-      printf("FIRST %s\n", first);
-      printf("SCND %s\n", scnd);
-      printf("THRD %s\n", thrd);
-      printf("REST %s\n", aux);
-    }else {
-      printf("Error al definir operacion entre conjuntos\n");
+void validar_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
+  char aux[256];
+  int j = 0, flag = 1, f = 0, i;
+  int array[256];
+  if(rest[strlen(rest) - 1] == '}') {
+    for (i = 1; rest[i] != '}' && flag; i++) {
+      if (rest[i] != ',' && isdigit(rest[i])) {
+        aux[j] = rest[i];
+        j++;
+      }else if (rest[i] != ',') {
+        j = 0;
+        flag = 0;
+        printf("Caracter invalido en conjunto");
+      }else {
+        aux[j] = '\0';
+        array[f] = atoi(aux);
+        f++;
+        j = 0;
+      }
     }
-  }else if(first[0] == '~' && !strcmp(scnd, "\0") && !strcmp(thrd, "\0") && !strcmp(aux, "\0")) {
-    sscanf(first, "~%s", first);
-    printf("COMPLEMENTO\n");
-  }else {
-    printf("FIRST %s\n", first);
-    printf("SCND %s\n", scnd);
-    printf("THRD %s\n", thrd);
-    printf("REST %s\n", aux);
-    printf("Error de sintaxis en la operación\n");
-  }
+    aux[j] = '\0';
+    array[f] = atoi(aux);
 
-  if(tabla != NULL) {
-    printf("ALIAS %s\n", alias);
-  }
+    if(flag) {
+      ITree arbol = itree_crear();
+      Interval intervalo = malloc(sizeof(Intervalo));
+      for(int i = 0; i <= f; i++) {
+        printf("%d\n", array[i]);
+        intervalo->bgn = array[i];
+        intervalo->end = array[i];
+        arbol = itree_insertar(arbol, intervalo);
+      }
 
-  free(first);
-  free(scnd);
-  free(thrd);
+      if(tablahash_buscar(tabla, alias) != NULL)
+        tablahash_eliminar(tabla, alias);
+      tablahash_insertar(tabla, alias, arbol);
+      free(intervalo);
+    }
+  } else {
+    printf("Formato de intervalo inválido\n");
+  }
 }
+
+void validar_insercion(char alias[], char rest[], TablaHash* tabla) {
+  if(isalpha(rest[1])) {
+    printf("Conjunto por comprension\n");
+  }else {
+    validar_insercion_ext(alias, rest, tabla);
+  }
+}
+
+void validar_operacion(char first[], char rest[], TablaHash* tabla) {
+  char *aux;
+  if((aux = strtok(rest, " ")) && !strcmp(aux, "=")) {
+    aux = strtok(NULL, "\n");
+    if(aux != NULL) {
+      if(aux[0] == '~') {
+        printf("validar complemento\n");
+        // validar_complemento(first, aux, tabla);
+      }else if (aux[0] == '{') {
+        validar_insercion(first, aux, tabla);
+      }else if (isalpha(aux[0])) {
+        printf("validar op entre conj\n");
+        // validar_op_entre_conj(first, aux, tabla);
+      }
+    }else {
+      printf("Error en la sintaxis de operacion\n");
+    }
+  }
+}
+
+// void define_operacion(char alias[], char op[], char aux[], TablaHash *tabla) {
+//   char *first = malloc(sizeof(char)*256);
+//   char *scnd = malloc(sizeof(char)*256);
+//   char *thrd = malloc(sizeof(char)*256);
+//   first[0] = '\0';
+//   scnd[0] = '\0';
+//   thrd[0] = '\0';
+
+//   printf("OP %s\n", op);
+
+//   sscanf(op, "%s %s %s %[^\n]", first, scnd, thrd, aux);
+
+//   if(!strcmp(aux, "\0") && (check_alpha(first) && check_alpha(thrd))) {
+//     if(!strcmp(scnd, "|")) {
+//       printf("UNION\n");
+//       printf("FIRST %s\n", first);
+//       printf("SCND %s\n", scnd);
+//       printf("THRD %s\n", thrd);
+//       printf("REST %s\n", aux);
+//     }else if(!strcmp(scnd, "&")) {
+//       printf("INTERSECCION\n");
+//       printf("FIRST %s\n", first);
+//       printf("SCND %s\n", scnd);
+//       printf("THRD %s\n", thrd);
+//       printf("REST %s\n", aux);
+//     }else if(!strcmp(scnd, "-")) {
+//       printf("RESTA\n");
+//       printf("FIRST %s\n", first);
+//       printf("SCND %s\n", scnd);
+//       printf("THRD %s\n", thrd);
+//       printf("REST %s\n", aux);
+//     }else {
+//       printf("Error al definir operacion entre conjuntos\n");
+//     }
+//   }else if(first[0] == '~' && !strcmp(scnd, "\0") && !strcmp(thrd, "\0") && !strcmp(aux, "\0")) {
+//     sscanf(first, "~%s", first);
+//     printf("COMPLEMENTO\n");
+//   }else {
+//     printf("FIRST %s\n", first);
+//     printf("SCND %s\n", scnd);
+//     printf("THRD %s\n", thrd);
+//     printf("REST %s\n", aux);
+//     printf("Error de sintaxis en la operación\n");
+//   }
+
+//   if(tabla != NULL) {
+//     printf("ALIAS %s\n", alias);
+//   }
+
+//   free(first);
+//   free(scnd);
+//   free(thrd);
+// }
 
 int main() {
   int end = 0, opcion;
   char buff[256];
-  char *first, *rest, *cond;
-  first = malloc(sizeof(char)*256);
-  cond = malloc(sizeof(char)*256);
-  rest = malloc(sizeof(char)*256);
+  char *first, *rest;
 
   Interval intervalo = malloc(sizeof(Intervalo));
   ITree raiz = itree_crear();
   TablaHash* tabla = tablahash_crear(31, hash);
 
   while (!end) {
-    first[0] = '\0';
-    cond[0] = '\0';
-    rest[0] = '\0';
     printf("Ingrese un comando:\n");
-    if(fgets(buff, 256, stdin) != NULL) {
+    if(fgets(buff, sizeof buff, stdin)) {
       if(buff[strlen(buff) - 1] == '\n') {
-        sscanf(buff, "%s %s %[^\n]", first, cond, rest);
+        first = strtok(buff, " \n");
+        rest = strtok(NULL, "\n");
       }else {
         for(char ch = getchar(); ch != '\n'; ch = getchar());
         printf("Excedio el limite de caracteres (254)\n");
       }
     }
 
-    opcion = verificar_opcion(first, cond, rest);
+    opcion = verificar_opcion(first, rest);
 
     switch (opcion) {
     case 0:
@@ -146,18 +211,17 @@ int main() {
       break;
     case 1:
       printf("IMPRIMIR\n");
-      raiz = tablahash_buscar(tabla, cond);
+      raiz = tablahash_buscar(tabla, rest);
       if(raiz != NULL) {
         itree_recorrer_dfs(raiz, imprimir_intervalo);
+        raiz = NULL;
       }else {
-        printf("Esa clave no corresponde a ningun elemento\n");
+        printf("Conjunto inexistente\n");
       }
-      raiz = NULL;
       break;
     case 2:
-      // printf("OPERACION\n");
-      cond[0] = '\0';
-      define_operacion(first, rest, cond, tabla);
+      printf("OPERACION\n");
+      validar_operacion(first, rest, tabla);
       break;
     case -1:
       printf("Comando inválido\n");
@@ -167,9 +231,6 @@ int main() {
   }
 
   free(intervalo);
-  free(first);
-  free(cond);
-  free(rest);
   itree_destruir(raiz);
   tablahash_destruir(tabla);
 }

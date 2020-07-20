@@ -9,7 +9,8 @@ ITree itree_crear() {
 
 void itree_destruir(ITree arbol) {
   if (arbol != NULL) {
-    free(arbol->intervalo);
+    if(arbol->intervalo != NULL)
+      free(arbol->intervalo);
     itree_destruir(arbol->left);
     itree_destruir(arbol->right);
     free(arbol);

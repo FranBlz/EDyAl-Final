@@ -46,12 +46,6 @@ void tablahash_insertar(TablaHash* tabla, char* clave, ITree dato) {
   }
 }
 
-int calcular_primo(int bgn) {
-  int found = 0;
-  for(bgn; !es_primo(bgn); bgn++);
-  return bgn;
-}
-
 int es_primo(int num) {
   int prime = 0;
   if (num % 2 == 0 || num % 3 == 0)
@@ -62,6 +56,11 @@ int es_primo(int num) {
   }
 
   return prime;
+}
+
+int calcular_primo(int bgn) {
+  for(; !es_primo(bgn); bgn++);
+  return bgn;
 }
 
 void tablahash_redimensionar(TablaHash *tabla) {
@@ -98,8 +97,7 @@ ITree tablahash_buscar(TablaHash* tabla, char* clave) {
   if(tabla->tabla[idx].clave != NULL) {
     CasillaHash* aux;
     int incremento = 1 + (tabla->hash(clave) % (tabla->capacidad));
-    int aux = idx + incremento;
-    for(aux = &(tabla->tabla[idx % tabla->capacidad]); (aux->clave != NULL && (strcmp(aux->clave, clave) != 0)) || (aux->dato == NULL && aux->clave != NULL); aux = &(tabla->tabla[(idx+ = incremento) % tabla->capacidad]));
+    for(aux = &(tabla->tabla[idx % tabla->capacidad]); (aux->clave != NULL && (strcmp(aux->clave, clave) != 0)) || (aux->dato == NULL && aux->clave != NULL); aux = &(tabla->tabla[(idx += incremento) % tabla->capacidad]));
   
     if(aux->clave != NULL) {
       dato = aux->dato;
@@ -116,7 +114,6 @@ void tablahash_eliminar(TablaHash* tabla, char* clave) {
   if(tabla->tabla[idx].clave != NULL) {
     CasillaHash* aux;
     int incremento = 1 + (tabla->hash(clave) % (tabla->capacidad));
-    int aux = idx + incremento;
     for(aux = &(tabla->tabla[idx % tabla->capacidad]); (aux->clave != NULL && (strcmp(aux->clave, clave) != 0)) || (aux->dato == NULL && aux->clave != NULL); aux = &(tabla->tabla[(idx += incremento) % tabla->capacidad]));
     
     if(aux->clave != NULL) {

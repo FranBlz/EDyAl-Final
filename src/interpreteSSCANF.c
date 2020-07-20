@@ -14,9 +14,9 @@
 typedef ITree (*FuncionOperacion)(ITree set1, ITree set2, ITree result);
 
 unsigned hash(char* clave) {  
-  int p = 0;
+  int p = 7;
   for(int i = 0; clave[i] != '\0'; i++) {
-    p += clave[i];
+    p = (p * 31) + clave[i];
   }
   return p;
 }
@@ -135,22 +135,73 @@ void perform_insercion_comp(char alias[], int val1, int val2, TablaHash *tabla) 
   free(intervalo);
 }
 
+void perform_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
+  char aux[256];
+  int j = 0, flag = 1, f = 0, i;
+  int array[256];
+  if(!strcmp(rest, "}")) {
+    ITree arbol = itree_crear();
+    arbol = itree_insertar(arbol, NULL);
+    tablahash_eliminar(tabla, alias);
+    tablahash_insertar(tabla, alias, arbol);
+  }else {
+    if(rest[strlen(rest) - 1] == '}') {
+      for (i = 0; rest[i] != '}' && flag; i++) {
+        if (rest[i] != ',' && (isdigit(rest[i]) || rest[i] == '-')) {
+          aux[j] = rest[i];
+          j++;
+        }else if (rest[i] == ',' && rest[i + 1] != ',') {
+          aux[j] = '\0';
+          array[f] = atoi(aux);
+          f++;
+          j = 0;
+        }else {
+          flag = 0;
+          printf("Caracter invalido en conjunto");
+        }
+      }
+      aux[j] = '\0';
+      array[f] = atoi(aux);
+
+      if(flag) {
+        ITree arbol = itree_crear();
+        Interval intervalo = malloc(sizeof(Intervalo));
+        for(int i = 0; i <= f; i++) {
+          intervalo->bgn = array[i];
+          intervalo->end = array[i];
+          arbol = itree_insertar(arbol, intervalo);
+        }
+
+        tablahash_eliminar(tabla, alias);
+        tablahash_insertar(tabla, alias, arbol);
+        free(intervalo);
+      }
+    } else {
+      printf("Formato de intervalo inválido\n");
+    }
+  }
+}
+
 void define_insercion(char alias[], char set[], TablaHash *tabla) {
   char var1[256], var2[256], val1[256], val2[256], aux[256];
   aux[0] = '\0';
   int read, num1, num2;
 
   read = sscanf(set, "{%s : %s <= %s <= %s} %[^\n]", var1, val1, var2, val2, aux);
-  num1 = atoi(val1);
-  num2 = atoi(val2);
+
+  if(read == 4) {
+    num1 = atoi(val1);
+    num2 = atoi(val2);
+  }
 
   if(read == 4 && !strcmp(aux, "\0")) {
     if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2)
       perform_insercion_comp(alias, num1, num2, tabla);
   }else {
-    read = sscanf(set, "{%s} %[^\n]", var1, aux);
-    // perform_insercion_ext();
-    printf("Insercion extension\n");
+    aux[0] = '\0';
+    read = sscanf(set, "{%s %[^\n]", var1, aux);
+    if(read == 1 && !strcmp(aux, "\0"))
+      perform_insercion_ext(alias, var1, tabla);
   }
 }
 
@@ -177,32 +228,23 @@ int main() {
 
     switch (opcion) {
     case SALIR:
-      printf("SALIR\n");
       free(intervalo);
       itree_destruir(raiz);
       tablahash_destruir(tabla);
       end = 1;
       break;
     case IMPRIMIR:
-      printf("IMPRIMIR\n");
-      raiz = tablahash_buscar(tabla, cond);
-      if(raiz != NULL) {
-        itree_recorrer_dfs(raiz, imprimir_intervalo);
-      }else {
-        printf("Esa clave no corresponde a ningun elemento\n");
-      }
-      raiz = NULL;
-      break;
-    case OPERACION:
-      printf("OPERACION\n");
-      define_operacion(first, rest, tabla);
-      break;
-    case INSERCION:
-      printf("INSERCION\n");
-      define_insercion(first, rest, tabla);
+      // raiz = tablahash_buscar(tabla, cond);
+      // if(raiz != NULL) {
+      //   itree_recorrer_dfs(raiz, imprimir_intervalo);
+      // }else {
+      //   printf("Esa clave no corresponde a ningun elemento\n");
+      // }
+      // raiz = NULL;
 
       for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
         if(tabla->tabla[idx].clave != NULL && tabla->tabla[idx].dato != NULL) {
+          printf("%s", tabla->tabla[idx].clave);
           itree_recorrer_dfs(tabla->tabla[idx].dato, imprimir_intervalo);
           puts("");
         }else {
@@ -210,6 +252,13 @@ int main() {
         }
       }
 
+
+      break;
+    case OPERACION:
+      define_operacion(first, rest, tabla);
+      break;
+    case INSERCION:
+      define_insercion(first, rest, tabla);
       break;
     case ERROR:
       printf("Comando inválido\n");

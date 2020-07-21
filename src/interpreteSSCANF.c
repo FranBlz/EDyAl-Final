@@ -23,7 +23,11 @@ unsigned hash(char* clave) {
 
 static void imprimir_intervalo(Interval intervalo) {
   if(intervalo != NULL) {
-    printf("[%d, %d] ", intervalo->bgn, intervalo->end);
+    if(intervalo->bgn != intervalo->end) {
+      printf("%d:%d", intervalo->bgn, intervalo->end);
+    }else {
+      printf("%d", intervalo->bgn);
+    }
   }else {
     printf("{}");
   }
@@ -157,11 +161,12 @@ void perform_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
           j = 0;
         }else {
           flag = 0;
-          printf("Caracter invalido en conjunto");
         }
       }
       aux[j] = '\0';
       array[f] = atoi(aux);
+      if(rest[i + 1] == '}')
+        flag = 0;
 
       if(flag) {
         ITree arbol = itree_crear();
@@ -175,9 +180,11 @@ void perform_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
         tablahash_eliminar(tabla, alias);
         tablahash_insertar(tabla, alias, arbol);
         free(intervalo);
+      }else {
+        printf("Caracter inválido en el conjunto\n");
       }
     } else {
-      printf("Formato de intervalo inválido\n");
+      printf("Formato de conjunto por extensión inválido\n");
     }
   }
 }
@@ -195,13 +202,19 @@ void define_insercion(char alias[], char set[], TablaHash *tabla) {
   }
 
   if(read == 4 && !strcmp(aux, "\0")) {
-    if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2)
+    if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2) {
       perform_insercion_comp(alias, num1, num2, tabla);
+    }else {
+      printf("Formato inválido para conjunto por compresión\n");
+    }
   }else {
     aux[0] = '\0';
     read = sscanf(set, "{%s %[^\n]", var1, aux);
-    if(read == 1 && !strcmp(aux, "\0"))
+    if(read == 1 && !strcmp(aux, "\0")) {
       perform_insercion_ext(alias, var1, tabla);
+    }else {
+      printf("Formato inválido para conjunto por extensión\n");
+    }
   }
 }
 

@@ -1,7 +1,8 @@
+#include "stack.h"
+#include "itree.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
-#include "itree.h"
 
 ITree itree_crear() {
   return NULL;
@@ -236,14 +237,6 @@ Interval itree_intersectar(ITree arbol, Interval intervalo) {
   return NULL;
 }
 
-void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
-  if (arbol != NULL) {
-    visit(arbol->intervalo);
-    itree_recorrer_dfs(arbol->left, visit);
-    itree_recorrer_dfs(arbol->right, visit);
-  }
-}
-
 ITree itree_copiar(ITree newTree, ITree arbol) {
   if(arbol != NULL) {
     newTree = itree_insertar(newTree, arbol->intervalo);
@@ -429,3 +422,36 @@ ITree itree_diferencia_aux(Interval intervalo, ITree arbol, ITree result) {
 
   return result;
 }
+
+// void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
+//   if (arbol != NULL) {
+//     itree_recorrer_dfs(arbol->left, visit);
+//     visit(arbol->intervalo);
+//     itree_recorrer_dfs(arbol->right, visit);
+//     printf(",");
+//   }
+// }
+
+void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
+
+  Pila stack = pila_crear();
+  ITree temp = arbol; 
+  
+    while (temp != NULL || !pila_es_vacia(stack)) { 
+      while (temp !=  NULL) { 
+        stack = pila_apilar(stack, temp); 
+        temp = temp->left; 
+      } 
+  
+      temp = pila_ultimo(stack);
+      stack = pila_desapilar(stack);
+
+      visit(temp->intervalo);
+      temp = temp->right;
+      if(temp != NULL || !pila_es_vacia(stack))
+        printf(",");
+    } 
+  
+  pila_destruir(stack);
+}
+

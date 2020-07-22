@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 #include "tablahash.h"
 #include "itree.h"
 
@@ -12,6 +13,22 @@
 #define ERROR -1
 
 typedef ITree (*FuncionOperacion)(ITree set1, ITree set2, ITree result);
+
+int string_to_int(char* str) {
+  int sign = 1, base = 0, i = 0, flag = 1; 
+  if (str[i] == '-') { 
+    sign = -1;
+    i++; 
+  } 
+
+  for (;str[i] != '\0' && flag; i++) {
+    base = 10 * base + (str[i] - '0');
+    if(!isdigit(str[i]))
+      flag = 0;
+  }
+  
+  return (base > INT_MAX || base < INT_MIN) ? 0 : base * sign * flag;
+} 
 
 unsigned hash(char* clave) {  
   int p = 7;
@@ -52,9 +69,9 @@ int verificar_opcion(char first[], char cond[], char rest[], int read) {
     if (read == 1)
       return SALIR;
   }else if (!strcmp(first, "imprimir")) {
-    if(check_alpha(cond) && read == 2)
+    if(read == 2 && check_alpha(cond))
       return IMPRIMIR;
-  }else if(check_alpha(first) && !strcmp(cond, "=") && read == 3) {
+  }else if(read == 3 && check_alpha(first) && !strcmp(cond, "=")) {
     if(rest[0] == '{') {
       return INSERCION;
     }else {
@@ -150,28 +167,28 @@ void perform_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
     tablahash_insertar(tabla, alias, arbol);
   }else {
     if(rest[strlen(rest) - 1] == '}') {
-      for (i = 0; rest[i] != '}' && flag; i++) {
+      for (i = 0; rest[i] != '\0' && flag; i++) {
         if (rest[i] != ',' && (isdigit(rest[i]) || rest[i] == '-')) {
+          if(rest[i] == '-' && j != 0)
+            flag = 0;
           aux[j] = rest[i];
           j++;
-        }else if (rest[i] == ',' && rest[i + 1] != ',') {
+        }else if ((rest[i] == ',' && isdigit(rest[i + 1])) || (rest[i] == '}' && rest[i + 1] == '\0')) {
           aux[j] = '\0';
-          array[f] = atoi(aux);
-          f++;
+          array[f] = string_to_int(aux);
+          if(array[f] == 0 && strcmp(aux, "0"))
+            flag = 0;
           j = 0;
+          f++;
         }else {
           flag = 0;
         }
       }
-      aux[j] = '\0';
-      array[f] = atoi(aux);
-      if(rest[i + 1] == '}')
-        flag = 0;
 
       if(flag) {
         ITree arbol = itree_crear();
         Interval intervalo = malloc(sizeof(Intervalo));
-        for(int i = 0; i <= f; i++) {
+        for(int i = 0; i < f; i++) {
           intervalo->bgn = array[i];
           intervalo->end = array[i];
           arbol = itree_insertar(arbol, intervalo);
@@ -191,29 +208,41 @@ void perform_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
 
 void define_insercion(char alias[], char set[], TablaHash *tabla) {
   char var1[256], var2[256], val1[256], val2[256], aux[256];
-  aux[0] = '\0';
   int read, num1, num2;
 
-  read = sscanf(set, "{%s : %s <= %s <= %s} %[^\n]", var1, val1, var2, val2, aux);
+  read = sscanf(set, "{%s : %s <= %s <= %s %[^\n]", var1, val1, var2, val2, aux);
 
   if(read == 4) {
-    num1 = atoi(val1);
-    num2 = atoi(val2);
+    int temp = read;
+    read = 0;
+    if(val2[strlen(val2) - 1] == '}') {
+      unsigned i;
+      for(i = 0; isdigit(val2[i]) || val2[i] == '-'; i++);
+      if(i == strlen(val2) - 1) {
+        val2[i] = '\0';
+        read = temp;
+      }
+    }
   }
 
-  if(read == 4 && !strcmp(aux, "\0")) {
+  if(read == 4) {
+    num1 = string_to_int(val1);
+    num2 = string_to_int(val2);
+  }
+
+  if(read == 4) {
     if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2) {
       perform_insercion_comp(alias, num1, num2, tabla);
     }else {
-      printf("Formato inválido para conjunto por compresión\n");
+      printf("Formato inválido para inserción de conjunto\n");
     }
   }else {
     aux[0] = '\0';
     read = sscanf(set, "{%s %[^\n]", var1, aux);
-    if(read == 1 && !strcmp(aux, "\0")) {
+    if(read == 1) {
       perform_insercion_ext(alias, var1, tabla);
     }else {
-      printf("Formato inválido para conjunto por extensión\n");
+      printf("Formato inválido para inserción de conjunto\n");
     }
   }
 }
@@ -221,6 +250,7 @@ void define_insercion(char alias[], char set[], TablaHash *tabla) {
 int main() {
   int end = 0, opcion, read;
   char buff[256], first[256], cond[256], rest[256];
+  first[0] = '\0';
 
   Interval intervalo = malloc(sizeof(Intervalo));
   ITree raiz = itree_crear();

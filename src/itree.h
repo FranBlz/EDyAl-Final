@@ -59,7 +59,7 @@ Interval itree_intersectar(ITree arbol, Interval intervalo);
 /**
  * Recorre el arbol por altura
 **/
-void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit);
+void itree_recorrer(ITree arbol, FuncionVisitante visit);
 
 ITree itree_unir(ITree arbol1, ITree arbol2, ITree newTree);
 ITree itree_copiar(ITree newTree, ITree arbol);

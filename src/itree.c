@@ -423,16 +423,7 @@ ITree itree_diferencia_aux(Interval intervalo, ITree arbol, ITree result) {
   return result;
 }
 
-// void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
-//   if (arbol != NULL) {
-//     itree_recorrer_dfs(arbol->left, visit);
-//     visit(arbol->intervalo);
-//     itree_recorrer_dfs(arbol->right, visit);
-//     printf(",");
-//   }
-// }
-
-void itree_recorrer_dfs(ITree arbol, FuncionVisitante visit) {
+void itree_recorrer(ITree arbol, FuncionVisitante visit) {
 
   Pila stack = pila_crear();
   ITree temp = arbol; 

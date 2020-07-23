@@ -40,7 +40,7 @@ int check_alpha(char word[]) {
 }
 
 int verificar_opcion(char first[], char cond[], char rest[], int read) {
-  if (read == 0) {
+  if (first[0] == '\0') {
     return ERROR;
   }else if (!strcmp(first, "salir")) {
     if (read == 1)
@@ -91,10 +91,7 @@ void check_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
   int j = 0, flag = 1, f = 0, i;
   int array[256];
   if(!strcmp(rest, "}")) {
-    ITree arbol = itree_crear();
-    arbol = itree_insertar(arbol, NULL);
-    tablahash_eliminar(tabla, alias);
-    tablahash_insertar(tabla, alias, arbol);
+    perform_insercion_ext(alias, array, f, tabla);
   }else {
     if(rest[strlen(rest) - 1] == '}') {
       for (i = 0; rest[i] != '\0' && flag; i++) {
@@ -103,7 +100,7 @@ void check_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
             flag = 0;
           aux[j] = rest[i];
           j++;
-        }else if ((rest[i] == ',' && isdigit(rest[i + 1])) || (rest[i] == '}' && rest[i + 1] == '\0')) {
+        }else if ((rest[i] == ',' && (isdigit(rest[i + 1]) || rest[i + 1] == '-')) || (rest[i] == '}' && rest[i + 1] == '\0')) {
           aux[j] = '\0';
           array[f] = string_to_int(aux);
           if(array[f] == 0 && strcmp(aux, "0"))
@@ -148,13 +145,21 @@ void define_insercion(char alias[], char set[], TablaHash *tabla) {
   if(read == 4) {
     num1 = string_to_int(val1);
     num2 = string_to_int(val2);
+
+    int i;
+    char c1, c2;
+    for(i = 0, c1 = var1[i]; isalpha(c1); c1 = var1[i++]);
+    for(i = 0, c2 = var2[i]; isalpha(c2); c2 = var2[i++]);
+
+    if(c1 != '\0' || c2 != '\0')
+      read = 0;  
   }
 
   if(read == 4) {
     if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2) {
       perform_insercion_comp(alias, num1, num2, tabla);
     }else {
-      printf("Formato inválido para inserción de conjunto\n");
+      printf("Comando inválido para inserción de conjunto\n");
     }
   }else {
     aux[0] = '\0';
@@ -162,7 +167,7 @@ void define_insercion(char alias[], char set[], TablaHash *tabla) {
     if(read == 1) {
       check_insercion_ext(alias, var1, tabla);
     }else {
-      printf("Formato inválido para inserción de conjunto\n");
+      printf("Comando inválido para inserción de conjunto\n");
     }
   }
 }

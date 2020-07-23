@@ -10,7 +10,6 @@ typedef unsigned (*FuncionHash)(char* clave);
 typedef struct _CasillaHash{
   char* clave;
   ITree dato;
-  int borrado;
 } CasillaHash;
 
 typedef struct {

@@ -1,7 +1,6 @@
 #include "stack.h"
 #include "itree.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 Pila pila_crear() {
     return NULL;

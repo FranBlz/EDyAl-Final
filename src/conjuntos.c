@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
-// #include <ctype.h>
-// #include <limits.h>
 #include "conjuntos.h"
 #include "tablahash.h"
 #include "itree.h"
@@ -36,23 +33,24 @@ void conjunto_destruir(TablaHash* tabla) {
 }
 
 void imprimir_conjunto(char alias[], TablaHash* tabla) {
-  ITree raiz = tablahash_buscar(tabla, alias);
-  if(raiz != NULL) {
-    itree_recorrer(raiz, imprimir_intervalo);
-  }else {
-    printf("Esa clave no corresponde a ningun elemento\n");
-  }
-  raiz = NULL;
-
-  // for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
-  //   if(tabla->tabla[idx].clave != NULL && tabla->tabla[idx].dato != NULL) {
-  //     printf("%s", tabla->tabla[idx].clave);
-  //     itree_recorrer(tabla->tabla[idx].dato, imprimir_intervalo);
-  //     puts("");
-  //   }else {
-  //     printf("VACIO %d\n", idx);
-  //   }
+  // ITree raiz = tablahash_buscar(tabla, alias);
+  // if(raiz != NULL) {
+  //   itree_recorrer(raiz, imprimir_intervalo);
+  // }else {
+  //   printf("Esa clave no corresponde a ningun elemento\n");
   // }
+  // raiz = NULL;
+
+  printf("alias %s\n\n", alias);
+  for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
+    if(tabla->tabla[idx].clave != NULL && tabla->tabla[idx].dato != NULL) {
+      printf("%s", tabla->tabla[idx].clave);
+      itree_recorrer(tabla->tabla[idx].dato, imprimir_intervalo);
+      puts("");
+    }else {
+      printf("VACIO %d\n", idx);
+    }
+  }
 }
 
 void perform_operacion(char alias[], char set1[], char set2[], TablaHash* tabla, int op) {
@@ -77,6 +75,8 @@ void perform_operacion(char alias[], char set1[], char set2[], TablaHash* tabla,
           break;
     }
     tablahash_eliminar(tabla, alias);
+    if(result == NULL)
+      result = itree_insertar(result, NULL);
     tablahash_insertar(tabla, alias, result);
   }else {
     printf("Algun conjunto pedido no existe\n");
@@ -93,6 +93,8 @@ void perform_complemento(char alias[], char set[], TablaHash* tabla) {
 
     result = itree_complemento(tree, result);
     tablahash_eliminar(tabla, alias);
+    if (result == NULL)
+      result = itree_insertar(result, NULL);
     tablahash_insertar(tabla, alias, result);
   }else {
     printf("El conjunto pedido no existe\n");
@@ -115,10 +117,15 @@ void perform_insercion_comp(char alias[], int val1, int val2, TablaHash *tabla) 
 void perform_insercion_ext(char alias[], int array[], int cantElem, TablaHash *tabla) {
   ITree arbol = itree_crear();
   Interval intervalo = malloc(sizeof(Intervalo));
-  for(int i = 0; i < cantElem; i++) {
-    intervalo->bgn = array[i];
-    intervalo->end = array[i];
-    arbol = itree_insertar(arbol, intervalo);
+  
+  if(cantElem == 0) {
+    arbol = itree_insertar(arbol, NULL);
+  }else {
+    for(int i = 0; i < cantElem; i++) {
+      intervalo->bgn = array[i];
+      intervalo->end = array[i];
+      arbol = itree_insertar(arbol, intervalo);
+    }
   }
 
   tablahash_eliminar(tabla, alias);

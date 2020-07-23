@@ -1,6 +1,4 @@
-#include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "tablahash.h"
 #include "itree.h"
@@ -65,7 +63,7 @@ int calcular_primo(int bgn) {
 
 void tablahash_redimensionar(TablaHash *tabla) {
   if(tabla != NULL) {
-
+    unsigned oldCapacidad = tabla->capacidad;
     tabla->capacidad = calcular_primo((tabla->capacidad * 2) + 1);
     CasillaHash* tablaAux = malloc(sizeof(CasillaHash) * tabla->capacidad);
 
@@ -78,7 +76,7 @@ void tablahash_redimensionar(TablaHash *tabla) {
     tabla->numElems = 0;
     tabla->tabla = tablaAux;
 
-    for(unsigned i = 0; i < (tabla->capacidad / 2); i++) {
+    for(unsigned i = 0; i < oldCapacidad; i++) {
       if(temp[i].dato != NULL)
         tablahash_insertar(tabla, temp[i].clave, temp[i].dato);
       if(temp[i].clave != NULL)

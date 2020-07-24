@@ -33,24 +33,24 @@ void conjunto_destruir(TablaHash* tabla) {
 }
 
 void imprimir_conjunto(char alias[], TablaHash* tabla) {
-  // ITree raiz = tablahash_buscar(tabla, alias);
-  // if(raiz != NULL) {
-  //   itree_recorrer(raiz, imprimir_intervalo);
-  // }else {
-  //   printf("Esa clave no corresponde a ningun elemento\n");
-  // }
-  // raiz = NULL;
-
-  printf("alias %s\n\n", alias);
-  for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
-    if(tabla->tabla[idx].clave != NULL && tabla->tabla[idx].dato != NULL) {
-      printf("%s", tabla->tabla[idx].clave);
-      itree_recorrer(tabla->tabla[idx].dato, imprimir_intervalo);
-      puts("");
-    }else {
-      printf("VACIO %d\n", idx);
-    }
+  ITree raiz = tablahash_buscar(tabla, alias);
+  if(raiz != NULL) {
+    itree_recorrer(raiz, imprimir_intervalo);
+  }else {
+    printf("Esa clave no corresponde a ningun elemento\n");
   }
+  raiz = NULL;
+
+  // printf("alias %s\n\n", alias);
+  // for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
+  //   if(tabla->tabla[idx].clave != NULL && tabla->tabla[idx].dato != NULL) {
+  //     printf("%s", tabla->tabla[idx].clave);
+  //     itree_recorrer(tabla->tabla[idx].dato, imprimir_intervalo);
+  //     puts("");
+  //   }else {
+  //     printf("VACIO %d\n", idx);
+  //   }
+  // }
 }
 
 void perform_operacion(char alias[], char set1[], char set2[], TablaHash* tabla, int op) {

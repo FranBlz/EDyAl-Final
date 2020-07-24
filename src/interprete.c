@@ -180,7 +180,7 @@ int main() {
   TablaHash* tabla = conjuntos_iniciar();
 
   while (!end) {
-    printf("Ingrese un comando:\n");
+    // printf("Ingrese un comando:\n");
     if(fgets(buff, 256, stdin) != NULL) {
       if(buff[strlen(buff) - 1] == '\n') {
         read = sscanf(buff, "%s %s %[^\n]", first, cond, rest);

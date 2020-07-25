@@ -301,12 +301,8 @@ ITree itree_interseccion_aux(Interval intervalo, ITree arbol, ITree result) {
       aux->bgn = intervalo->bgn;
       aux->end = arbol->intervalo->bgn - 1;
       intervalo->bgn = arbol->intervalo->end + 1;
-      posicion = get_direccion_arbol(arbol->intervalo, intervalo);
-      if (posicion < 0) {
-        result = itree_interseccion_aux(aux, arbol->left, result);
-      } else if (posicion > 0) {
-        result = itree_interseccion_aux(aux, arbol->right, result);
-      }
+      posicion = get_direccion_arbol(arbol->intervalo, aux);
+      result = itree_interseccion_aux(aux, arbol->left, result);
     }
     free(aux);
   }

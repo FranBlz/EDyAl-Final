@@ -59,10 +59,10 @@ int verificar_opcion(char first[], char cond[], char rest[], int read) {
 }
 
 void define_operacion(char alias[], char op[], TablaHash *tabla) {
-  char first[256], scnd[256], thrd[256], aux[256];
+  char first[102], scnd[2], thrd[101], aux[256];
   int read;
 
-  read = sscanf(op, "%s %s %s %[^\n]", first, scnd, thrd, aux);
+  read = sscanf(op, "%101s %1s %100s %[^\n]", first, scnd, thrd, aux);
 
   if(read == 3 && (check_alpha(first) && check_alpha(thrd))) {
     if(!strcmp(scnd, "|")) {
@@ -124,10 +124,10 @@ void check_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
 }
 
 void define_insercion(char alias[], char set[], TablaHash *tabla) {
-  char var1[256], var2[256], val1[256], val2[256], aux[256];
+  char var1[2], var2[2], val1[12], val2[12], aux[256];
   int read, num1, num2;
 
-  read = sscanf(set, "{%s : %s <= %s <= %s %[^\n]", var1, val1, var2, val2, aux);
+  read = sscanf(set, "{%1s : %11s <= %1s <= %11s %[^\n]", var1, val1, var2, val2, aux);
 
   if(read == 4) {
     int temp = read;
@@ -174,16 +174,15 @@ void define_insercion(char alias[], char set[], TablaHash *tabla) {
 
 int main() {
   int end = 0, opcion, read;
-  char buff[256], first[256], cond[256], rest[256];
+  char buff[256], first[101], cond[101], rest[256];
   first[0] = '\0';
 
   TablaHash* tabla = conjuntos_iniciar();
 
   while (!end) {
-    // printf("Ingrese un comando:\n");
     if(fgets(buff, 256, stdin) != NULL) {
       if(buff[strlen(buff) - 1] == '\n') {
-        read = sscanf(buff, "%s %s %[^\n]", first, cond, rest);
+        read = sscanf(buff, "%100s %100s %[^\n]", first, cond, rest);
       }else {
         for(char ch = getchar(); ch != '\n'; ch = getchar());
         printf("Excedio el limite de caracteres (254)\n");

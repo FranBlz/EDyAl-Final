@@ -72,17 +72,17 @@ void define_operacion(char alias[], char op[], TablaHash *tabla) {
     }else if(!strcmp(scnd, "-")) {
       perform_operacion(alias, first, thrd, tabla, 3);
     }else {
-      printf("Error al definir operacion entre conjuntos\n");
+      printf("Formato inválido para operación entre conjuntos\n");
     }
   }else if(first[0] == '~' && read == 1) {
     sscanf(first, "~%s", first);
     if(check_alpha(first)) {
       perform_complemento(alias, first, tabla);
     }else {
-      printf("Error de sintaxis en complemento\n");
+      printf("Formato inválido para complemento\n");
     }
   }else {
-    printf("Error de sintaxis en la operación\n");
+    printf("Formato inválido para operación\n");
   }
 }
 

@@ -81,22 +81,22 @@ void test_operaciones1(void) {
   tablahash_insertar(newTable, "compB", arbol);
 
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "A"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "A"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "B"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "B"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "UNION"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "UNION"), imprimir_intervalo);
   puts("");
   puts("");
   CU_ASSERT_EQUAL(tablahash_buscar(newTable, "INTERSECCION"), NULL);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "AminusB"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "AminusB"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "BminusA"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "BminusA"), imprimir_intervalo);
   puts("");
   puts("");
   CU_ASSERT_EQUAL(tablahash_buscar(newTable, "AminusUNION"), NULL);
@@ -105,10 +105,10 @@ void test_operaciones1(void) {
   CU_ASSERT_EQUAL(tablahash_buscar(newTable, "BminusUNION"), NULL);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "compA"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "compA"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "compB"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "compB"), imprimir_intervalo);
   puts("");
 
   tablahash_destruir(newTable);
@@ -165,28 +165,28 @@ void test_operaciones2(void) {
   tablahash_insertar(newTable, "U", arbol);
   
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N1"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N1"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N2"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N2"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N3"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N3"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N4"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N4"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N5"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N5"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "N6"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "N6"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "A2"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "A2"), imprimir_intervalo);
   puts("");
   puts("");
-  itree_recorrer_dfs(tablahash_buscar(newTable, "U"), imprimir_intervalo);
+  itree_recorrer(tablahash_buscar(newTable, "U"), imprimir_intervalo);
   puts("");
 
   tablahash_destruir(newTable);

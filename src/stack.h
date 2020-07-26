@@ -21,4 +21,4 @@ Pila pila_desapilar(Pila stack);
 
 void pila_destruir(Pila stack);
 
-#endif /* __STACK_H__ */
+#endif

@@ -10,7 +10,7 @@ ITree itree_crear() {
 
 void itree_destruir(ITree arbol) {
   if (arbol != NULL) {
-    if(arbol->intervalo != NULL)
+    if (arbol->intervalo != NULL)
       free(arbol->intervalo);
     itree_destruir(arbol->left);
     itree_destruir(arbol->right);
@@ -41,7 +41,8 @@ int itree_max_aux(int maySub, ITree nodo2) {
 }
 
 int itree_max_sub(ITree nodo) {
-  return itree_max_aux(itree_max_aux(nodo->intervalo->end, nodo->left), nodo->right);
+  return itree_max_aux(itree_max_aux(nodo->intervalo->end, nodo->left),
+                       nodo->right);
 }
 
 ITree itree_rotacion_simple_der(ITree arbol) {
@@ -75,7 +76,7 @@ ITree itree_rotacion_simple_izq(ITree arbol) {
 ITree itree_balancear_izq(ITree arbol) {
   if (itree_balance_factor(arbol->left) <= 0) {
     arbol = itree_rotacion_simple_der(arbol);
-  }else {
+  } else {
     arbol->left = itree_rotacion_simple_izq(arbol->left);
     arbol = itree_rotacion_simple_der(arbol);
   }
@@ -85,7 +86,7 @@ ITree itree_balancear_izq(ITree arbol) {
 ITree itree_balancear_der(ITree arbol) {
   if (itree_balance_factor(arbol->right) >= 0) {
     arbol = itree_rotacion_simple_izq(arbol);
-  }else {
+  } else {
     arbol->right = itree_rotacion_simple_der(arbol->right);
     arbol = itree_rotacion_simple_izq(arbol);
   }
@@ -94,11 +95,11 @@ ITree itree_balancear_der(ITree arbol) {
 
 ITree create_node(Interval intervalo) {
   ITree nodo = malloc(sizeof(INode));
-  if(intervalo != NULL) {
+  if (intervalo != NULL) {
     nodo->intervalo = malloc(sizeof(Intervalo));
     nodo->intervalo->bgn = intervalo->bgn;
     nodo->intervalo->end = intervalo->end;
-  }else {
+  } else {
     nodo->intervalo = NULL;
   }
   nodo->alt = 0;
@@ -110,23 +111,20 @@ ITree create_node(Interval intervalo) {
 
 int get_direccion_arbol(Interval nodo, Interval intervalo) {
   int inicio = 0;
-  
-  if(intervalo->bgn < nodo->bgn) {
+
+  if (intervalo->bgn < nodo->bgn) {
     inicio = -1;
-  }else if(intervalo->bgn > nodo->bgn) {
+  } else if (intervalo->bgn > nodo->bgn) {
     inicio = 1;
   }
 
-  if(inicio == 0) {
-    if(intervalo->end < nodo->end) {
+  if (inicio == 0) {
+    if (intervalo->end < nodo->end) {
       inicio = -1;
-    }else if(intervalo->end > nodo->end) {
+    } else if (intervalo->end > nodo->end) {
       inicio = 1;
     }
   }
-  
-  // int inicio = intervalo->bgn - nodo->bgn;
-  //  == 0 ? intervalo->end - nodo->end : inicio
   return inicio;
 }
 
@@ -138,15 +136,19 @@ ITree itree_insertar(ITree arbol, Interval intervalo) {
   restore->bgn = intervalo->bgn;
   restore->end = intervalo->end;
 
-  if(intersectar(arbol->intervalo, intervalo)) {
-    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+  if (intersectar(arbol->intervalo, intervalo)) {
+    if (intervalo->bgn >= arbol->intervalo->bgn
+        && intervalo->end <= arbol->intervalo->end) {
       free(restore);
       return arbol;
-    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+    } else if (intervalo->bgn >= arbol->intervalo->bgn
+               && intervalo->bgn <= arbol->intervalo->end) {
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
-    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+    } else if (intervalo->end >= arbol->intervalo->bgn
+               && intervalo->end <= arbol->intervalo->end) {
       intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
-    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+    } else if (intervalo->bgn < arbol->intervalo->bgn
+               && intervalo->end > arbol->intervalo->end) {
       Interval aux = malloc(sizeof(Intervalo));
       aux->bgn = intervalo->bgn;
       aux->end = arbol->intervalo->bgn - 1;
@@ -221,7 +223,7 @@ ITree itree_eliminar(ITree arbol, Interval intervalo) {
   }
 
   if(arbol != NULL)
-    arbol->alt -= 1;
+    arbol->alt = itree_altura(arbol);
   return arbol;
 }
 
@@ -238,7 +240,7 @@ Interval itree_intersectar(ITree arbol, Interval intervalo) {
 }
 
 ITree itree_copiar(ITree newTree, ITree arbol) {
-  if(arbol != NULL) {
+  if (arbol != NULL) {
     newTree = itree_insertar(newTree, arbol->intervalo);
     newTree = itree_copiar(newTree, arbol->left);
     newTree = itree_copiar(newTree, arbol->right);
@@ -248,10 +250,10 @@ ITree itree_copiar(ITree newTree, ITree arbol) {
 }
 
 ITree itree_unir(ITree arbol1, ITree arbol2, ITree newTree) {
-  if(itree_altura(arbol1) >= itree_altura(arbol2)) {
+  if (itree_altura(arbol1) >= itree_altura(arbol2)) {
     newTree = itree_copiar(newTree, arbol1);
     newTree = itree_copiar(newTree, arbol2);
-  }else {
+  } else {
     newTree = itree_copiar(newTree, arbol2);
     newTree = itree_copiar(newTree, arbol1);
   }
@@ -260,7 +262,7 @@ ITree itree_unir(ITree arbol1, ITree arbol2, ITree newTree) {
 }
 
 ITree itree_interseccion(ITree arbol1, ITree arbol2, ITree result) {
-  if(arbol1 == NULL) {
+  if (arbol1 == NULL) {
     return result;
   }
 
@@ -272,29 +274,33 @@ ITree itree_interseccion(ITree arbol1, ITree arbol2, ITree result) {
 }
 
 ITree itree_interseccion_aux(Interval intervalo, ITree arbol, ITree result) {
-  if(arbol == NULL)
+  if (arbol == NULL)
     return result;
-  
+
   int posicion;
   Interval restore = malloc(sizeof(Intervalo));
   restore->bgn = intervalo->bgn;
   restore->end = intervalo->end;
-  
-  if(intersectar(arbol->intervalo, intervalo)) {
+
+  if (intersectar(arbol->intervalo, intervalo)) {
     Interval aux = malloc(sizeof(Intervalo));
-    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+    if (intervalo->bgn >= arbol->intervalo->bgn
+        && intervalo->end <= arbol->intervalo->end) {
       result = itree_insertar(result, intervalo);
-    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+    } else if (intervalo->bgn >= arbol->intervalo->bgn
+               && intervalo->bgn <= arbol->intervalo->end) {
       aux->bgn = intervalo->bgn;
       aux->end = arbol->intervalo->end;
       result = itree_insertar(result, aux);
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
-    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+    } else if (intervalo->end >= arbol->intervalo->bgn
+               && intervalo->end <= arbol->intervalo->end) {
       aux->bgn = arbol->intervalo->bgn;
       aux->end = intervalo->end;
       result = itree_insertar(result, aux);
       intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
-    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+    } else if (intervalo->bgn < arbol->intervalo->bgn
+               && intervalo->end > arbol->intervalo->end) {
       aux->bgn = arbol->intervalo->bgn;
       aux->end = arbol->intervalo->end;
       result = itree_insertar(result, aux);
@@ -336,14 +342,18 @@ ITree itree_complemento_aux(ITree arbol, Interval intervalo, ITree result) {
     return result;
   }
 
-  if(intersectar(arbol->intervalo, intervalo)) {
-    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+  if (intersectar(arbol->intervalo, intervalo)) {
+    if (intervalo->bgn >= arbol->intervalo->bgn
+        && intervalo->end <= arbol->intervalo->end) {
       return result;
-    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+    } else if (intervalo->bgn >= arbol->intervalo->bgn
+               && intervalo->bgn <= arbol->intervalo->end) {
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
-    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+    } else if (intervalo->end >= arbol->intervalo->bgn
+               && intervalo->end <= arbol->intervalo->end) {
       intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
-    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+    } else if (intervalo->bgn < arbol->intervalo->bgn
+               && intervalo->end > arbol->intervalo->end) {
       Interval aux = malloc(sizeof(Intervalo));
       aux->bgn = intervalo->bgn;
       aux->end = arbol->intervalo->bgn - 1;
@@ -365,7 +375,7 @@ ITree itree_complemento_aux(ITree arbol, Interval intervalo, ITree result) {
 }
 
 ITree itree_diferencia(ITree arbol1, ITree arbol2, ITree result) {
-  if(arbol1 == NULL) {
+  if (arbol1 == NULL) {
     return result;
   }
 
@@ -386,15 +396,19 @@ ITree itree_diferencia_aux(Interval intervalo, ITree arbol, ITree result) {
   restore->bgn = intervalo->bgn;
   restore->end = intervalo->end;
 
-  if(intersectar(arbol->intervalo, intervalo)) {
-    if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+  if (intersectar(arbol->intervalo, intervalo)) {
+    if (intervalo->bgn >= arbol->intervalo->bgn
+        && intervalo->end <= arbol->intervalo->end) {
       free(restore);
       return result;
-    }else if(intervalo->bgn >= arbol->intervalo->bgn && intervalo->bgn <= arbol->intervalo->end) {
+    } else if (intervalo->bgn >= arbol->intervalo->bgn
+               && intervalo->bgn <= arbol->intervalo->end) {
       intervalo->bgn += (arbol->intervalo->end - intervalo->bgn) + 1;
-    }else if(intervalo->end >= arbol->intervalo->bgn && intervalo->end <= arbol->intervalo->end) {
+    } else if (intervalo->end >= arbol->intervalo->bgn
+               && intervalo->end <= arbol->intervalo->end) {
       intervalo->end -= (intervalo->end - arbol->intervalo->bgn) + 1;
-    }else if(intervalo->bgn < arbol->intervalo->bgn && intervalo->end > arbol->intervalo->end) {
+    } else if (intervalo->bgn < arbol->intervalo->bgn
+               && intervalo->end > arbol->intervalo->end) {
       Interval aux = malloc(sizeof(Intervalo));
       aux->bgn = intervalo->bgn;
       aux->end = arbol->intervalo->bgn - 1;
@@ -422,23 +436,22 @@ ITree itree_diferencia_aux(Interval intervalo, ITree arbol, ITree result) {
 void itree_recorrer(ITree arbol, FuncionVisitante visit) {
 
   Pila stack = pila_crear();
-  ITree temp = arbol; 
-  
-    while (temp != NULL || !pila_es_vacia(stack)) { 
-      while (temp !=  NULL) { 
-        stack = pila_apilar(stack, temp); 
-        temp = temp->left; 
-      } 
-  
-      temp = pila_ultimo(stack);
-      stack = pila_desapilar(stack);
+  ITree temp = arbol;
 
-      visit(temp->intervalo);
-      temp = temp->right;
-      if(temp != NULL || !pila_es_vacia(stack))
-        printf(",");
-    } 
-  
+  while (temp != NULL || !pila_es_vacia(stack)) {
+    while (temp != NULL) {
+      stack = pila_apilar(stack, temp);
+      temp = temp->left;
+    }
+
+    temp = pila_ultimo(stack);
+    stack = pila_desapilar(stack);
+
+    visit(temp->intervalo);
+    temp = temp->right;
+    if (temp != NULL || !pila_es_vacia(stack))
+      printf(",");
+  }
+
   pila_destruir(stack);
 }
-

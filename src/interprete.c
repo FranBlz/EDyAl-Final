@@ -11,28 +11,28 @@
 #define SALIR 0
 #define ERROR -1
 
-int string_to_int(char* str) {
-  int sign = 1, base = 0, i = 0, flag = 1; 
-  if (str[i] == '-') { 
+int string_to_int(char *str) {
+  int sign = 1, base = 0, i = 0, flag = 1;
+  if (str[i] == '-') {
     sign = -1;
-    i++; 
-  } 
+    i++;
+  }
 
-  for (;str[i] != '\0' && flag; i++) {
+  for (; str[i] != '\0' && flag; i++) {
     base = 10 * base + (str[i] - '0');
-    if(!isdigit(str[i]))
+    if (!isdigit(str[i]))
       flag = 0;
   }
-  
+
   return (base > INT_MAX || base < INT_MIN) ? 0 : base * sign * flag;
-} 
+}
 
 int check_alpha(char word[]) {
   int flag = 1;
-  if(!strcmp(word, "\0"))
+  if (!strcmp(word, "\0"))
     flag = 0;
-  for(int i = 0; flag == 1 && (word[i] != '\0' && word[i] != '\n'); i++) {
-    if(!isalpha(word[i]))
+  for (int i = 0; flag == 1 && (word[i] != '\0' && word[i] != '\n'); i++) {
+    if (!isalpha(word[i]))
       flag = 0;
   }
 
@@ -42,79 +42,81 @@ int check_alpha(char word[]) {
 int verificar_opcion(char first[], char cond[], char rest[], int read) {
   if (first[0] == '\0') {
     return ERROR;
-  }else if (!strcmp(first, "salir")) {
+  } else if (!strcmp(first, "salir")) {
     if (read == 1)
       return SALIR;
-  }else if (!strcmp(first, "imprimir")) {
-    if(read == 2 && check_alpha(cond))
+  } else if (!strcmp(first, "imprimir")) {
+    if (read == 2 && check_alpha(cond))
       return IMPRIMIR;
-  }else if(read == 3 && check_alpha(first) && !strcmp(cond, "=")) {
-    if(rest[0] == '{') {
+  } else if (read == 3 && check_alpha(first) && !strcmp(cond, "=")) {
+    if (rest[0] == '{') {
       return INSERCION;
-    }else {
+    } else {
       return OPERACION;
     }
   }
   return ERROR;
 }
 
-void define_operacion(char alias[], char op[], TablaHash *tabla) {
+void define_operacion(char alias[], char op[], TablaHash * tabla) {
   char first[102], scnd[2], thrd[101], aux[256];
   int read;
 
   read = sscanf(op, "%101s %1s %100s %[^\n]", first, scnd, thrd, aux);
 
-  if(read == 3 && (check_alpha(first) && check_alpha(thrd))) {
-    if(!strcmp(scnd, "|")) {
+  if (read == 3 && (check_alpha(first) && check_alpha(thrd))) {
+    if (!strcmp(scnd, "|")) {
       perform_operacion(alias, first, thrd, tabla, 1);
-    }else if(!strcmp(scnd, "&")) {
+    } else if (!strcmp(scnd, "&")) {
       perform_operacion(alias, first, thrd, tabla, 2);
-    }else if(!strcmp(scnd, "-")) {
+    } else if (!strcmp(scnd, "-")) {
       perform_operacion(alias, first, thrd, tabla, 3);
-    }else {
+    } else {
       printf("Formato inválido para operación entre conjuntos\n");
     }
-  }else if(first[0] == '~' && read == 1) {
+  } else if (first[0] == '~' && read == 1) {
     sscanf(first, "~%s", first);
-    if(check_alpha(first)) {
+    if (check_alpha(first)) {
       perform_complemento(alias, first, tabla);
-    }else {
+    } else {
       printf("Formato inválido para complemento\n");
     }
-  }else {
+  } else {
     printf("Formato inválido para operación\n");
   }
 }
 
-void check_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
+void check_insercion_ext(char alias[], char rest[], TablaHash * tabla) {
   char aux[256];
   int j = 0, flag = 1, f = 0, i;
   int array[256];
-  if(!strcmp(rest, "}")) {
+  if (!strcmp(rest, "}")) {
     perform_insercion_ext(alias, array, f, tabla);
-  }else {
-    if(rest[strlen(rest) - 1] == '}') {
+  } else {
+    if (rest[strlen(rest) - 1] == '}') {
       for (i = 0; rest[i] != '\0' && flag; i++) {
         if (rest[i] != ',' && (isdigit(rest[i]) || rest[i] == '-')) {
-          if(rest[i] == '-' && j != 0)
+          if (rest[i] == '-' && j != 0)
             flag = 0;
           aux[j] = rest[i];
           j++;
-        }else if ((rest[i] == ',' && (isdigit(rest[i + 1]) || rest[i + 1] == '-')) || (rest[i] == '}' && rest[i + 1] == '\0')) {
+        } else
+            if ((rest[i] == ',' && (isdigit(rest[i + 1]) || rest[i + 1] == '-'))
+                || (rest[i] == '}' && rest[i + 1] == '\0')) {
           aux[j] = '\0';
           array[f] = string_to_int(aux);
-          if(array[f] == 0 && strcmp(aux, "0"))
+          if (array[f] == 0 && strcmp(aux, "0"))
             flag = 0;
           j = 0;
           f++;
-        }else {
+        } else {
           flag = 0;
         }
       }
 
-      if(flag) {
+      if (flag) {
         perform_insercion_ext(alias, array, f, tabla);
-      }else {
+      } else {
         printf("Caracter inválido en el conjunto\n");
       }
     } else {
@@ -123,50 +125,54 @@ void check_insercion_ext(char alias[], char rest[], TablaHash* tabla) {
   }
 }
 
-void define_insercion(char alias[], char set[], TablaHash *tabla) {
+void define_insercion(char alias[], char set[], TablaHash * tabla) {
   char var1[2], var2[2], val1[12], val2[12], aux[256];
   int read, num1, num2;
 
-  read = sscanf(set, "{%1s : %11s <= %1s <= %11s %[^\n]", var1, val1, var2, val2, aux);
+  read =
+      sscanf(set, "{%1s : %11s <= %1s <= %11s %[^\n]", var1, val1, var2, val2,
+             aux);
 
-  if(read == 4) {
+  if (read == 4) {
     int temp = read;
     read = 0;
-    if(val2[strlen(val2) - 1] == '}') {
+    if (val2[strlen(val2) - 1] == '}') {
       unsigned i;
-      for(i = 0; isdigit(val2[i]) || val2[i] == '-'; i++);
-      if(i == strlen(val2) - 1) {
+      for (i = 0; isdigit(val2[i]) || val2[i] == '-'; i++);
+      if (i == strlen(val2) - 1) {
         val2[i] = '\0';
         read = temp;
       }
     }
   }
 
-  if(read == 4) {
+  if (read == 4) {
     num1 = string_to_int(val1);
     num2 = string_to_int(val2);
 
     int i;
     char c1, c2;
-    for(i = 0, c1 = var1[i]; isalpha(c1); c1 = var1[i++]);
-    for(i = 0, c2 = var2[i]; isalpha(c2); c2 = var2[i++]);
+    for (i = 0, c1 = var1[i]; isalpha(c1); c1 = var1[i++]);
+    for (i = 0, c2 = var2[i]; isalpha(c2); c2 = var2[i++]);
 
-    if(c1 != '\0' || c2 != '\0')
-      read = 0;  
+    if (c1 != '\0' || c2 != '\0')
+      read = 0;
   }
 
-  if(read == 4) {
-    if(!strcmp(var1, var2) && (!(strcmp(val1, "0") && num1 == 0) && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2) {
+  if (read == 4) {
+    if (!strcmp(var1, var2)
+        && (!(strcmp(val1, "0") && num1 == 0)
+            && !(strcmp(val2, "0") && num2 == 0)) && num1 <= num2) {
       perform_insercion_comp(alias, num1, num2, tabla);
-    }else {
+    } else {
       printf("Comando inválido para inserción de conjunto\n");
     }
-  }else {
+  } else {
     aux[0] = '\0';
     read = sscanf(set, "{%s %[^\n]", var1, aux);
-    if(read == 1) {
+    if (read == 1) {
       check_insercion_ext(alias, var1, tabla);
-    }else {
+    } else {
       printf("Comando inválido para inserción de conjunto\n");
     }
   }
@@ -177,14 +183,14 @@ int main() {
   char buff[256], first[101], cond[101], rest[256];
   first[0] = '\0';
 
-  TablaHash* tabla = conjuntos_iniciar();
+  TablaHash *tabla = conjuntos_iniciar();
 
   while (!end) {
-    if(fgets(buff, 256, stdin) != NULL) {
-      if(buff[strlen(buff) - 1] == '\n') {
+    if (fgets(buff, 256, stdin) != NULL) {
+      if (buff[strlen(buff) - 1] == '\n') {
         read = sscanf(buff, "%100s %100s %[^\n]", first, cond, rest);
-      }else {
-        for(char ch = getchar(); ch != '\n'; ch = getchar());
+      } else {
+        for (char ch = getchar(); ch != '\n'; ch = getchar());
         printf("Excedio el limite de caracteres (254)\n");
       }
     }

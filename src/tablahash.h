@@ -5,30 +5,30 @@
 
 #include "itree.h"
 
-typedef unsigned (*FuncionHash)(char* clave);
+typedef unsigned (*FuncionHash) (char *clave);
 
-typedef struct _CasillaHash{
-  char* clave;
+typedef struct _CasillaHash {
+  char *clave;
   ITree dato;
 } CasillaHash;
 
 typedef struct {
-  CasillaHash* tabla;
+  CasillaHash *tabla;
   unsigned numElems;
   unsigned capacidad;
   FuncionHash hash;
 } TablaHash;
 
-TablaHash* tablahash_crear(unsigned capacidad, FuncionHash fun);
+TablaHash *tablahash_crear(unsigned capacidad, FuncionHash fun);
 
-void tablahash_insertar(TablaHash* tabla, char* clave, ITree dato);
+void tablahash_insertar(TablaHash *tabla, char *clave, ITree dato);
 
-ITree tablahash_buscar(TablaHash* tabla, char* clave);
+ITree tablahash_buscar(TablaHash *tabla, char *clave);
 
-void tablahash_eliminar(TablaHash* tabla, char* clave);
+void tablahash_eliminar(TablaHash *tabla, char *clave);
 
 void tablahash_redimensionar(TablaHash *tabla);
 
-void tablahash_destruir(TablaHash* tabla);
+void tablahash_destruir(TablaHash *tabla);
 
-#endif /* __TABLAHASH_H__ */
+#endif

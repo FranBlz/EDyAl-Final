@@ -2,8 +2,9 @@ TEST1 = testing/hashTest
 HASH = testing/tablahash.o
 TEST2 = testing/itreeTest
 ITREE = testing/itree.o
+STACK = testing/stack.o
 
-DEPENDENCIAS_TEST = $(TEST1).o $(TEST2).o $(ITREE) $(HASH)
+DEPENDENCIAS_TEST = $(TEST1).o $(TEST2).o $(ITREE) $(HASH) $(STACK)
 
 SALIDA = salida
 
@@ -22,4 +23,4 @@ main:
 	cd ./src/ && make && mv ./*.o ../testing && cp ./*.h ../testing
 
 clean:
-	rm config.out testing/*.o testing/itree.h testing/tablahash.h
+	rm config.out testing/*.o testing/itree.h testing/tablahash.h testing/stack.h

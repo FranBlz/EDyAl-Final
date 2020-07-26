@@ -12,7 +12,7 @@
 #define ERROR -1
 
 int string_to_int(char *str) {
-  int sign = 1, base = 0, i = 0, flag = 1;
+  long sign = 1, base = 0, i = 0, flag = 1;
   if (str[i] == '-') {
     sign = -1;
     i++;
@@ -24,7 +24,7 @@ int string_to_int(char *str) {
       flag = 0;
   }
 
-  return (base > INT_MAX || base < INT_MIN) ? 0 : base * sign * flag;
+  return (base > INT_MAX || base < INT_MIN) ? 0 : (int)(base * sign * flag);
 }
 
 int check_alpha(char word[]) {
@@ -105,7 +105,7 @@ void check_insercion_ext(char alias[], char rest[], TablaHash * tabla) {
                 || (rest[i] == '}' && rest[i + 1] == '\0')) {
           aux[j] = '\0';
           array[f] = string_to_int(aux);
-          if (array[f] == 0 && strcmp(aux, "0"))
+          if ((array[f] == 0 && strcmp(aux, "0")) || (array[f] > INT_MAX || array[f] < INT_MIN))
             flag = 0;
           j = 0;
           f++;
@@ -128,7 +128,7 @@ void check_insercion_ext(char alias[], char rest[], TablaHash * tabla) {
 void define_insercion(char alias[], char set[], TablaHash * tabla) {
   char var1[2], var2[2], val1[12], val2[12], aux[256];
   int read, num1, num2;
-
+  
   read =
       sscanf(set, "{%1s : %11s <= %1s <= %11s %[^\n]", var1, val1, var2, val2,
              aux);
@@ -150,12 +150,7 @@ void define_insercion(char alias[], char set[], TablaHash * tabla) {
     num1 = string_to_int(val1);
     num2 = string_to_int(val2);
 
-    int i;
-    char c1, c2;
-    for (i = 0, c1 = var1[i]; isalpha(c1); c1 = var1[i++]);
-    for (i = 0, c2 = var2[i]; isalpha(c2); c2 = var2[i++]);
-
-    if (c1 != '\0' || c2 != '\0')
+    if (!(isalpha(var1[0]) && isalpha(var2[0])))
       read = 0;
   }
 

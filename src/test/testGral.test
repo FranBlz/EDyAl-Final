@@ -1,0 +1,37 @@
+A = {-1,1,3}
+imprimir A
+B = {0,2}
+imprimir B
+C = {x : -1 <= x <= 3}
+imprimir C
+D = A | B
+imprimir D
+E = A & B
+imprimir E
+F = C - A
+imprimir F
+G = A - C
+imprimir G
+H = C - B
+imprimir H
+I = B - C
+imprimir I
+J = {2,3,4,5}
+imprimir J
+K = C | J
+imprimir K
+L = J | C
+imprimir L
+M = C & J
+imprimir M
+N = J & C
+imprimir N
+O = C - J
+imprimir O
+P = J - C
+imprimir P
+B = ~B
+imprimir B
+A = ~C
+imprimir A
+salir
